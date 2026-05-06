@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Zen Gym - The Spirit Aura</title>
+    <title>Zen Gym - The Chronicles</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,7 @@
 
         .scroll-container { flex: 1; overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding-left: 6px; padding-right: 6px; }
 
-        /* THE SYSTEM OVERLAY (Cinematics) */
+        /* THE SYSTEM OVERLAY */
         #system-overlay {
             position: fixed; inset: 0; z-index: 20000; background: rgba(0,0,0,0.95);
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -38,53 +38,22 @@
         .bento-card { background: white; border: 1px solid #e5e5e5; border-radius: 32px; transition: 0.3s; }
         .pill { background: #f3f3f3; color: #555; padding: 8px 16px; border-radius: 100px; font-size: 9px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        .image-container { width: 80px; height: 80px; border-radius: 22px; overflow: hidden; background: #f9f9f9; }
-        .anime-display { width: 100%; height: 100%; object-fit: contain; }
-
-        #timer-bar { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 280px; 
-            background: #1a1a1a; color: white; padding: 40px; 
-            transform: translateY(100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
-            z-index: 9999; border-radius: 44px 44px 0 0; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        #timer-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 280px; background: #1a1a1a; color: white; padding: 40px; transform: translateY(100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; border-radius: 44px 44px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         #timer-bar.show { transform: translateY(0); }
-        #timer-display { font-weight: 800; font-style: normal; letter-spacing: -0.02em; line-height: 1; }
 
-        #retreat-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 85%; max-width: 340px; background: white; border-radius: 40px;
-            padding: 40px; z-index: 10000; display: none; opacity: 0; transition: 0.3s;
-            text-align: center; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.25);
-        }
+        #retreat-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: white; border-radius: 40px; padding: 40px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; text-align: center; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.25); }
         #retreat-modal.show { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        .set-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #f2f2f2; width: 100%; }
-        
-        .selection-circle { 
-            width: 26px; height: 26px; border-radius: 50%; border: 2px solid #eee; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 11px; font-weight: 800; color: transparent; transition: 0.2s; 
-        }
-        .selection-circle.active { background: #1a1a1a; border-color: #1a1a1a; color: white !important; transform: scale(1.1); }
-
-        /* XP BAR */
         .xp-container { width: 100%; height: 2px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .xp-bar { height: 100%; background: #1a1a1a; width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* SPIRIT AURA EFFECT */
-        .aura-container {
-            width: 100%; height: 192px; border-radius: 40px; position: relative;
-            background: #f9f9f9; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; margin-bottom: 32px; border: 1px solid #f0f0f0;
-            transition: 0.5s ease;
-        }
-        .aura-glow {
-            position: absolute; width: 120px; height: 120px; border-radius: 50%;
-            filter: blur(45px); opacity: 0.4; animation: auraPulse 3s infinite ease-in-out;
-            pointer-events: none; transition: background-color 0.8s ease;
-        }
+        .aura-container { width: 100%; height: 192px; border-radius: 40px; position: relative; background: #f9f9f9; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 32px; border: 1px solid #f0f0f0; transition: 0.5s ease; }
+        .aura-glow { position: absolute; width: 120px; height: 120px; border-radius: 50%; filter: blur(45px); opacity: 0.4; animation: auraPulse 3s infinite ease-in-out; pointer-events: none; transition: background-color 0.8s ease; }
         @keyframes auraPulse { 0%, 100% { transform: scale(1.2); opacity: 0.3; } 50% { transform: scale(1.8); opacity: 0.6; } }
+
+        /* CHRONICLE STYLING */
+        .chronicle-card { padding: 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .chronicle-date { font-size: 9px; font-weight: 800; color: #ccc; text-transform: uppercase; letter-spacing: 0.1em; }
     </style>
 </head>
 <body class="p-6">
@@ -107,7 +76,6 @@
     <div id="onboarding" class="fixed inset-0 bg-white z-[200] p-10 flex flex-col hidden">
         <div id="step-1" class="flex-1 flex flex-col justify-center">
             <h1 class="text-5xl font-extrabold tracking-tighter mb-4 italic text-gray-800">Zen.</h1>
-            <p class="text-gray-400 text-[10px] mb-12 uppercase tracking-[0.3em] font-black">Register your presence, Warrior.</p>
             <input type="text" id="user-name-input" placeholder="Name" class="text-4xl font-light border-b-2 border-gray-100 py-4 w-full">
             <div onclick="saveName()" class="zen-button mt-16 press-effect">Enter Sanctuary</div>
         </div>
@@ -143,21 +111,26 @@
         </div>
 
         <div class="scroll-container">
-            <div class="press-effect bento-card p-8 mb-12 border-gray-200" onclick="startWorkout(fullRoutine, 'home')">
+            <div class="press-effect bento-card p-8 mb-10 border-gray-200" onclick="startWorkout(fullRoutine, 'home')">
                 <span class="pill bg-black text-white mb-6 inline-block">The Main Quest</span>
-                <h3 class="text-2xl font-bold mb-1 text-gray-800 tracking-tighter uppercase text-left">Path of the Warrior</h3>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] text-left">Biceps & Shoulders</p>
-                <div class="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-black italic text-left">Enter the Arena →</div>
+                <h3 class="text-2xl font-bold mb-1 text-gray-800 tracking-tighter uppercase">Path of the Warrior</h3>
+                <div class="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-black italic">Enter Arena →</div>
+            </div>
+
+            <div id="chronicles-section" class="mb-10 hidden">
+                <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em] px-2">Recent Chronicles</h3>
+                <div id="chronicles-list" class="bento-card overflow-hidden">
+                    </div>
             </div>
 
             <h3 class="text-[9px] font-black mb-6 text-gray-800 uppercase tracking-[0.4em] px-2 text-center">The Warrior's Arsenal</h3>
             <div class="grid grid-cols-2 gap-4 mb-20">
-                <div onclick="openSelection('Chest')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Chest</div>
-                <div onclick="openSelection('Back')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Back</div>
-                <div onclick="openSelection('Shoulders')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Shoulders</div>
-                <div onclick="openSelection('Arms')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Arms</div>
-                <div onclick="openSelection('Legs')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Legs</div>
-                <div onclick="openSelection('Core')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black tracking-widest text-gray-700">Core</div>
+                <div onclick="openSelection('Chest')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Chest</div>
+                <div onclick="openSelection('Back')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Back</div>
+                <div onclick="openSelection('Shoulders')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Shoulders</div>
+                <div onclick="openSelection('Arms')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Arms</div>
+                <div onclick="openSelection('Legs')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Legs</div>
+                <div onclick="openSelection('Core')" class="press-effect bento-card p-8 text-center text-[9px] uppercase font-black text-gray-700">Core</div>
             </div>
         </div>
     </div>
@@ -238,40 +211,30 @@
             A: { title: "The Ascendant", sub: "You have surpassed the ceiling of human potential." },
             S: { title: "The Transcendent", sub: "The legend ends here. A new eternity begins." }
         };
-
-        // AURA COLOR MAP
-        const AURA_COLORS = {
-            'Chest': '#ff4d4d',      // Red
-            'Back': '#9d4edd',       // Purple
-            'Arms': '#0077ff',       // Blue
-            'Legs': '#38b000',       // Green
-            'Shoulders': '#00f5d4',  // Teal/Cyan
-            'Core': '#ffbe0b',       // Gold/Yellow
-            'Default': '#1a1a1a'
-        };
+        const AURA_COLORS = { 'Chest': '#ff4d4d', 'Back': '#9d4edd', 'Arms': '#0077ff', 'Legs': '#38b000', 'Shoulders': '#00f5d4', 'Core': '#ffbe0b', 'Default': '#1a1a1a' };
 
         const fullLibrary = [
-            { en: "Alternating Dumbbell Curl", es: "Curl alterno con mancuerna", group: "Arms", target: "Biceps", alt: "Hammer Curls" },
-            { en: "Barbell Curl", es: "Curl con barra", group: "Arms", target: "Biceps", alt: "Cable Curls" },
-            { en: "Concentration Curl", es: "Curl concentrado", group: "Arms", target: "Biceps", alt: "Preacher Curls" },
-            { en: "Dumbbell Military Press", es: "Press militar con mancuerna", group: "Shoulders", target: "Shoulders", alt: "Shoulder Press Machine" },
-            { en: "Lateral Raises", es: "Elevaciones laterales", group: "Shoulders", target: "Shoulders", alt: "Cable Lateral Raises" },
-            { en: "Front Raises", es: "Elevaciones frontales", group: "Shoulders", target: "Shoulders", alt: "Plate Raises" },
-            { en: "Bench Press", es: "Press de Banca", group: "Chest", target: "Chest", alt: "Dumbbell Press" },
-            { en: "Incline Press", es: "Press Inclinado", group: "Chest", target: "Chest", alt: "Incline DB Press" },
-            { en: "Lat Pulldown", es: "Jalón al Pecho", group: "Back", target: "Back", alt: "Pull Ups" },
-            { en: "Seated Row", es: "Remo Sentado", group: "Back", target: "Back", alt: "Bent Over Row" },
-            { en: "Squats", es: "Sentadillas", group: "Legs", target: "Legs", alt: "Leg Press" },
-            { en: "Leg Extension", es: "Extensión de Piernas", group: "Legs", target: "Quads", alt: "Lunges" },
-            { en: "Upper Abs Crunch", es: "Abdominales Superiores", group: "Core", target: "Abs", alt: "Plank" },
-            { en: "Lower Abs Raises", es: "Elevación de Piernas", group: "Core", target: "Abs", alt: "Mountain Climbers" },
-            { en: "Oblique Crunch", es: "Crunch Oblicuo Acostado", group: "Core", target: "Abs", alt: "Russian Twist" }
+            { en: "Alternating Dumbbell Curl", es: "Curl alterno con mancuerna", group: "Arms", target: "Biceps" },
+            { en: "Barbell Curl", es: "Curl con barra", group: "Arms", target: "Biceps" },
+            { en: "Concentration Curl", es: "Curl concentrado", group: "Arms", target: "Biceps" },
+            { en: "Dumbbell Military Press", es: "Press militar con mancuerna", group: "Shoulders", target: "Shoulders" },
+            { en: "Lateral Raises", es: "Elevaciones laterales", group: "Shoulders", target: "Shoulders" },
+            { en: "Front Raises", es: "Elevaciones frontales", group: "Shoulders", target: "Shoulders" },
+            { en: "Bench Press", es: "Press de Banca", group: "Chest", target: "Chest" },
+            { en: "Incline Press", es: "Press Inclinado", group: "Chest", target: "Chest" },
+            { en: "Lat Pulldown", es: "Jalón al Pecho", group: "Back", target: "Back" },
+            { en: "Seated Row", es: "Remo Sentado", group: "Back", target: "Back" },
+            { en: "Squats", es: "Sentadillas", group: "Legs", target: "Legs" },
+            { en: "Leg Extension", es: "Extensión de Piernas", group: "Legs", target: "Quads" },
+            { en: "Upper Abs Crunch", es: "Abdominales Superiores", group: "Core", target: "Abs" },
+            { en: "Lower Abs Raises", es: "Elevación de Piernas", group: "Core", target: "Abs" },
+            { en: "Oblique Crunch", es: "Crunch Oblicuo Acostado", group: "Core", target: "Abs" }
         ];
 
         const fullRoutine = fullLibrary.filter(ex => ["Alternating Dumbbell Curl", "Barbell Curl", "Concentration Curl", "Dumbbell Military Press", "Lateral Raises", "Front Raises", "Upper Abs Crunch", "Lower Abs Raises", "Oblique Crunch"].includes(ex.en));
 
         let activeSession = [];
-        let selectedInMenu = [];
+        let sessionLog = [];
         let currentIdx = 0;
         let currentSet = 1;
         let timerInterval;
@@ -286,6 +249,7 @@
                 document.getElementById('display-name').innerText = name; 
                 updateLevelUI();
                 updateFlavor();
+                renderChronicles();
             }
         };
 
@@ -361,6 +325,10 @@
             document.activeElement.blur();
             const w = document.getElementById('weight-input').value || "0";
             const r = document.getElementById('reps-input').value || "0";
+            
+            // Record to current session data
+            sessionLog.push({ exercise: activeSession[currentIdx].en, weight: w, reps: r });
+
             const row = document.createElement('div');
             row.className = "set-row";
             row.innerHTML = `<span class="font-black text-gray-400 text-[9px] uppercase italic">Form ${currentSet}</span><span class="font-bold text-gray-800">${w}kg x ${r}</span>`;
@@ -372,23 +340,48 @@
             startTimer(60);
         }
 
+        function concludeQuest() {
+            const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
+            const newRecord = {
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+                summary: [...new Set(activeSession.map(ex => ex.group))].join(", "),
+                totalSets: sessionLog.length
+            };
+            chronicles.unshift(newRecord);
+            localStorage.setItem('zen-chronicles', JSON.stringify(chronicles.slice(0, 5)));
+            renderChronicles();
+            alert("Chronicle Recorded. Quest Concluded.");
+            closeModal('workout-ui');
+            updateFlavor();
+        }
+
+        function renderChronicles() {
+            const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
+            const list = document.getElementById('chronicles-list');
+            const section = document.getElementById('chronicles-section');
+            if (chronicles.length > 0) {
+                section.classList.remove('hidden');
+                list.innerHTML = chronicles.map(c => `
+                    <div class="chronicle-card">
+                        <div>
+                            <p class="text-xs font-bold text-gray-800 uppercase tracking-tight">${c.summary}</p>
+                            <p class="text-[8px] font-black text-gray-400 uppercase mt-1">${c.totalSets} Forms Completed</p>
+                        </div>
+                        <span class="chronicle-date">${c.date}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
         function updateFlavor() {
-            const quotes = [
-                "Keep moving forward.", "No matter how many times you’re knocked down, get back up.",
-                "Feel the rage. The powerful, pure rage of not being able to forgive.",
-                "If you don’t take risks, you can’t create a future.", "Arise.",
-                "The journey is what matters, not the destination.", "Kings must be greedier than anyone.",
-                "Throughout heaven and earth, I alone am the honored one.",
-                "A lesson without pain is meaningless.", "100 push-ups. 100 sit-ups. 100 squats. Run 10 km.",
-                "I have no enemies..."
-            ];
+            const quotes = ["Keep moving forward.", "No matter how many times you’re knocked down, get back up.", "Feel the rage.", "If you don’t take risks, you can’t create a future.", "Arise.", "The journey is what matters, not the destination.", "Kings must be greedier than anyone.", "Throughout heaven and earth, I alone am the honored one.", "A lesson without pain is meaningless.", "100 push-ups. 100 sit-ups. 100 squats. Run 10 km.", "I have no enemies..."];
             document.getElementById('flavor-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
             const h = new Date().getHours();
             document.getElementById('time-greeting').innerText = h < 12 ? "Timeline: Dawn" : h < 18 ? "Timeline: Solar" : "Timeline: Twilight";
         }
 
         function startWorkout(exercises, from) {
-            activeSession = exercises; currentIdx = 0;
+            activeSession = exercises; sessionLog = []; currentIdx = 0;
             document.getElementById('quit-label').innerText = from === 'selection' ? 'Close' : 'Retreat';
             document.getElementById('active-character').src = (localStorage.getItem('zen-type') || 'lean') + '.png';
             document.getElementById('workout-ui').classList.remove('hidden');
@@ -396,10 +389,10 @@
         }
 
         function resetSets() { currentSet = 1; document.getElementById('history-list').innerHTML = ''; document.getElementById('set-counter').innerText = `Form 1`; }
-        function retreatClick() { document.getElementById('ui-shield').classList.add('active'); document.getElementById('retreat-modal').classList.add('show'); }
+        function retreatClick() { if (sourceUI === 'selection') { closeModal('workout-ui'); } else { document.getElementById('ui-shield').classList.add('active'); document.getElementById('retreat-modal').classList.add('show'); } }
         function cancelRetreat() { document.getElementById('ui-shield').classList.remove('active'); document.getElementById('retreat-modal').classList.remove('show'); }
         function confirmRetreat() { skipTimer(); cancelRetreat(); closeModal('workout-ui'); updateFlavor(); }
-        function nextExercise() { if (currentIdx < activeSession.length - 1) { currentIdx++; resetSets(); updateUI(); } else { skipTimer(); alert("Quest Concluded."); closeModal('workout-ui'); updateFlavor(); } }
+        function nextExercise() { if (currentIdx < activeSession.length - 1) { currentIdx++; resetSets(); updateUI(); } else { skipTimer(); concludeQuest(); } }
         function skipTimer() { clearInterval(timerInterval); document.getElementById('timer-bar').classList.remove('show'); document.getElementById('ui-shield').classList.remove('active'); }
         function startTimer(seconds) {
             clearInterval(timerInterval); let time = seconds;
@@ -437,32 +430,24 @@
         function saveName() { const n = document.getElementById('user-name-input').value; if(n) { localStorage.setItem('zen-name', n); document.getElementById('step-1').classList.add('hidden'); document.getElementById('step-2').classList.remove('hidden'); } }
         function saveType(t) { localStorage.setItem('zen-type', t); location.reload(); }
         function resetApp() { if(confirm("Abandon your legacy?")) { localStorage.clear(); location.reload(); } }
-        
         function updateUI() {
             const ex = activeSession[currentIdx];
             document.getElementById('ex-name-en').innerText = ex.en;
             document.getElementById('ex-name-es').innerText = ex.es;
             document.getElementById('progress-text').innerText = `Stage ${currentIdx + 1} / ${activeSession.length}`;
-            
-            // PB / History Label
             const last = localStorage.getItem('last-' + ex.en);
             document.getElementById('history-label').innerText = last ? `PB: ${last}kg` : "New Art";
             document.getElementById('weight-input').value = last || "";
-            
-            // AURA RECALIBRATION
             const auraColor = AURA_COLORS[ex.group] || AURA_COLORS['Default'];
             document.getElementById('spirit-aura').style.backgroundColor = auraColor;
             document.getElementById('target-muscle').innerText = ex.target;
-
             document.getElementById('back-btn').style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
             document.getElementById('next-btn').innerText = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
         }
-
         function closeSelectionUI() { closeModal('selection-ui'); updateFlavor(); }
         function startSelected() { if (selectedInMenu.length > 0) { closeModal('selection-ui'); startWorkout(selectedInMenu, 'selection'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function prevExercise() { if (currentIdx > 0) { currentIdx--; resetSets(); updateUI(); } }
-        function swapExercise() { alert("Variation: Use Alternate Art."); }
         
         document.addEventListener('touchstart', (e) => { const el = e.target.closest('.press-effect'); if (el) el.classList.add('is-pressed'); }, {passive: true});
         document.addEventListener('touchend', (e) => { const el = e.target.closest('.press-effect'); if (el) el.classList.remove('is-pressed'); }, {passive: true});
