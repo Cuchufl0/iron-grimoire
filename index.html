@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Zen Gym - The System</title>
+    <title>Zen Gym - Stability</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -156,13 +156,14 @@
         <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0">
             <div onclick="retreatClick()" class="pill cursor-pointer press-effect">Retreat</div>
             <span id="progress-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Stage 1 / 4</span>
-            <div class="w-16"></div> </div>
+            <div class="w-16"></div>
+        </div>
 
         <div class="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-6">
             <div class="aura-container">
                 <div id="spirit-aura" class="aura-glow"></div>
                 <img id="active-character" src="" class="w-full h-full object-contain relative z-10">
-                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">---</span>
+                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">&nbsp;</span>
             </div>
 
             <div class="flex justify-between items-end mb-1"><h2 id="ex-name-en" class="text-2xl font-extrabold tracking-tighter text-gray-800">---</h2><span id="set-counter" class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Form 1</span></div>
@@ -432,16 +433,18 @@
         
         function updateUI() {
             const ex = activeSession[currentIdx];
-            document.getElementById('ex-name-en').innerText = ex.en;
-            document.getElementById('ex-name-es').innerText = ex.es;
-            document.getElementById('progress-text').innerText = `Stage ${currentIdx + 1} / ${activeSession.length}`;
+            document.getElementById('ex-name-en').textContent = ex.en;
+            document.getElementById('ex-name-es').textContent = ex.es;
+            document.getElementById('progress-text').textContent = `Stage ${currentIdx + 1} / ${activeSession.length}`;
             const last = localStorage.getItem('last-' + ex.en);
-            document.getElementById('history-label').innerText = last ? `PB: ${last}kg` : "New Art";
+            document.getElementById('history-label').textContent = last ? `PB: ${last}kg` : "New Art";
             document.getElementById('weight-input').value = last || "";
             document.getElementById('spirit-aura').style.backgroundColor = AURA_COLORS[ex.group] || '#1a1a1a';
-            document.getElementById('target-muscle').innerText = ex.target;
             
-            // Manage Footer Buttons (Anchor strictly to 50/50 Grid)
+            // BULLETPROOF DOM OVERRIDE
+            const targetEl = document.getElementById('target-muscle');
+            if (targetEl) targetEl.textContent = (ex.target || "TECHNIQUE").toUpperCase();
+            
             const backBtn = document.getElementById('back-btn');
             if(currentIdx === 0) {
                 backBtn.style.opacity = '0';
@@ -450,7 +453,7 @@
                 backBtn.style.opacity = '1';
                 backBtn.style.pointerEvents = 'auto';
             }
-            document.getElementById('next-btn').innerText = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
+            document.getElementById('next-btn').textContent = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
         }
         
         function saveName() { const n = document.getElementById('user-name-input').value; if(n) { localStorage.setItem('zen-name', n); document.getElementById('step-1').classList.add('hidden'); document.getElementById('step-2').classList.remove('hidden'); } }
