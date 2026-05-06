@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Zen Gym - The Narrative System</title>
+    <title>Zen Gym - The Spirit Aura</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -71,6 +71,20 @@
         /* XP BAR */
         .xp-container { width: 100%; height: 2px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .xp-bar { height: 100%; background: #1a1a1a; width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* SPIRIT AURA EFFECT */
+        .aura-container {
+            width: 100%; height: 192px; border-radius: 40px; position: relative;
+            background: #f9f9f9; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; margin-bottom: 32px; border: 1px solid #f0f0f0;
+            transition: 0.5s ease;
+        }
+        .aura-glow {
+            position: absolute; width: 120px; height: 120px; border-radius: 50%;
+            filter: blur(45px); opacity: 0.4; animation: auraPulse 3s infinite ease-in-out;
+            pointer-events: none; transition: background-color 0.8s ease;
+        }
+        @keyframes auraPulse { 0%, 100% { transform: scale(1.2); opacity: 0.3; } 50% { transform: scale(1.8); opacity: 0.6; } }
     </style>
 </head>
 <body class="p-6">
@@ -165,9 +179,10 @@
         </div>
 
         <div class="scroll-container">
-            <div class="w-full h-48 bg-gray-50 rounded-[40px] flex flex-col items-center justify-center mb-8 overflow-hidden relative border border-gray-100">
-                <img id="active-character" src="" class="w-full h-full object-contain">
-                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest">Technique</span>
+            <div class="aura-container">
+                <div id="spirit-aura" class="aura-glow"></div>
+                <img id="active-character" src="" class="w-full h-full object-contain relative z-10">
+                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">Technique</span>
             </div>
 
             <div class="flex justify-between items-end mb-1 px-1">
@@ -222,6 +237,17 @@
             B: { title: "The Adept", sub: "The System no longer guides you; it follows you." },
             A: { title: "The Ascendant", sub: "You have surpassed the ceiling of human potential." },
             S: { title: "The Transcendent", sub: "The legend ends here. A new eternity begins." }
+        };
+
+        // AURA COLOR MAP
+        const AURA_COLORS = {
+            'Chest': '#ff4d4d',      // Red
+            'Back': '#9d4edd',       // Purple
+            'Arms': '#0077ff',       // Blue
+            'Legs': '#38b000',       // Green
+            'Shoulders': '#00f5d4',  // Teal/Cyan
+            'Core': '#ffbe0b',       // Gold/Yellow
+            'Default': '#1a1a1a'
         };
 
         const fullLibrary = [
@@ -411,17 +437,27 @@
         function saveName() { const n = document.getElementById('user-name-input').value; if(n) { localStorage.setItem('zen-name', n); document.getElementById('step-1').classList.add('hidden'); document.getElementById('step-2').classList.remove('hidden'); } }
         function saveType(t) { localStorage.setItem('zen-type', t); location.reload(); }
         function resetApp() { if(confirm("Abandon your legacy?")) { localStorage.clear(); location.reload(); } }
+        
         function updateUI() {
             const ex = activeSession[currentIdx];
             document.getElementById('ex-name-en').innerText = ex.en;
             document.getElementById('ex-name-es').innerText = ex.es;
             document.getElementById('progress-text').innerText = `Stage ${currentIdx + 1} / ${activeSession.length}`;
+            
+            // PB / History Label
             const last = localStorage.getItem('last-' + ex.en);
             document.getElementById('history-label').innerText = last ? `PB: ${last}kg` : "New Art";
             document.getElementById('weight-input').value = last || "";
+            
+            // AURA RECALIBRATION
+            const auraColor = AURA_COLORS[ex.group] || AURA_COLORS['Default'];
+            document.getElementById('spirit-aura').style.backgroundColor = auraColor;
+            document.getElementById('target-muscle').innerText = ex.target;
+
             document.getElementById('back-btn').style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
             document.getElementById('next-btn').innerText = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
         }
+
         function closeSelectionUI() { closeModal('selection-ui'); updateFlavor(); }
         function startSelected() { if (selectedInMenu.length > 0) { closeModal('selection-ui'); startWorkout(selectedInMenu, 'selection'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
