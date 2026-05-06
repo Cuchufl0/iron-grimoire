@@ -119,19 +119,15 @@
         </div>
 
         <div class="scroll-container pb-32">
+            
             <div class="press-effect bento-card p-8 mb-10 border-gray-200 cursor-pointer" onclick="startWorkout(fullRoutine, 'home')">
                 <span class="pill bg-black text-white mb-6 inline-block">The Main Quest</span>
                 <h3 class="text-2xl font-bold mb-1 text-gray-800 tracking-tighter uppercase">Path of the Warrior</h3>
                 <div class="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-black italic">Enter Arena →</div>
             </div>
 
-            <div id="chronicles-section" class="mb-10 hidden px-2">
-                <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Recent Chronicles</h3>
-                <div id="chronicles-list" class="bento-card overflow-hidden"></div>
-            </div>
-
             <h3 class="text-[9px] font-black mb-6 text-gray-800 uppercase tracking-[0.4em] px-2 text-center">The Warrior's Arsenal</h3>
-            <div class="grid grid-cols-2 gap-4 px-2">
+            <div class="grid grid-cols-2 gap-4 px-2 mb-12">
                 <div onclick="toggleArsenal('Chest')" id="btn-Chest" class="arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black">Chest</div>
                 <div onclick="toggleArsenal('Back')" id="btn-Back" class="arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black">Back</div>
                 <div onclick="toggleArsenal('Shoulders')" id="btn-Shoulders" class="arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black">Shoulders</div>
@@ -139,6 +135,12 @@
                 <div onclick="toggleArsenal('Legs')" id="btn-Legs" class="arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black">Legs</div>
                 <div onclick="toggleArsenal('Core')" id="btn-Core" class="arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black">Core</div>
             </div>
+
+            <div id="chronicles-section" class="mb-10 hidden px-2">
+                <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em] text-center">Recent Chronicles</h3>
+                <div id="chronicles-list" class="bento-card overflow-hidden"></div>
+            </div>
+
         </div>
     </div>
 
@@ -163,13 +165,10 @@
             <div class="aura-container">
                 <div id="spirit-aura" class="aura-glow"></div>
                 <img id="active-character" src="" class="w-full h-full object-contain relative z-10">
-                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">TECHNIQUE</span>
+                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">&nbsp;</span>
             </div>
 
-            <div class="flex justify-between items-end mb-1">
-                <h2 id="ex-name-en" class="text-2xl font-extrabold tracking-tighter text-gray-800">---</h2>
-                <span id="set-counter" class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Form 1</span>
-            </div>
+            <div class="flex justify-between items-end mb-1"><h2 id="ex-name-en" class="text-2xl font-extrabold tracking-tighter text-gray-800">---</h2><span id="set-counter" class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Form 1</span></div>
             
             <div class="flex items-center justify-between mb-8 px-1 w-full">
                 <h3 id="ex-name-es" class="text-sm font-bold italic text-gray-400">---</h3>
@@ -190,7 +189,7 @@
         </div>
 
         <div class="mt-auto pt-4 flex gap-4 w-full shrink-0 border-t border-gray-100 bg-white pb-2">
-            <div id="back-btn" onclick="prevExercise()" class="flex-1 py-5 rounded-[24px] bg-gray-100 font-bold text-gray-500 text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center transition-opacity cursor-pointer">Back</div>
+            <div id="back-btn" onclick="prevExercise()" style="visibility: hidden;" class="flex-1 py-5 rounded-[24px] bg-gray-100 font-bold text-gray-500 text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer">Back</div>
             <div id="next-btn" onclick="nextExercise()" class="flex-1 py-5 rounded-[24px] bg-[#1a1a1a] text-white font-bold text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer">Advance</div>
         </div>
     </div>
@@ -453,12 +452,11 @@
             if (targetEl) targetEl.textContent = (ex.target || "TECHNIQUE").toUpperCase();
             
             const backBtn = document.getElementById('back-btn');
+            // BACK BUTTON FIX: Swap opacity manipulation for standard CSS visibility
             if(currentIdx === 0) {
-                backBtn.style.opacity = '0';
-                backBtn.style.pointerEvents = 'none';
+                backBtn.style.visibility = 'hidden';
             } else {
-                backBtn.style.opacity = '1';
-                backBtn.style.pointerEvents = 'auto';
+                backBtn.style.visibility = 'visible';
             }
             document.getElementById('next-btn').textContent = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
         }
