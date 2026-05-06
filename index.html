@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Gym Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; color: #1a1a1a; }
+        .bento-card { background: white; border: 1px solid #eee; border-radius: 18px; transition: all 0.3s ease; }
+        .zen-button { background: #1a1a1a; color: white; border-radius: 12px; padding: 12px 24px; transition: opacity 0.2s; }
+        .zen-button:active { opacity: 0.7; }
+        .anime-placeholder { background: #f0f0f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #aaa; border: 1px dashed #ccc; }
+    </style>
+</head>
+<body class="p-6 max-w-md mx-auto">
+
+    <header class="mb-8">
+        <h1 class="text-xs tracking-widest uppercase text-gray-400 mb-1">Morning Session</h1>
+        <h2 class="text-2xl font-semibold">Ready for Day 1?</h2>
+    </header>
+
+    <div class="bento-card p-6 mb-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+            <span class="px-3 py-1 bg-gray-100 text-[10px] rounded-full uppercase tracking-wider font-semibold">Next Up</span>
+            <span class="text-xs text-gray-400">45-60 min</span>
+        </div>
+        <h3 class="text-xl font-medium mb-1">Biceps & Shoulders</h3>
+        <p class="text-sm text-gray-500 mb-6 italic">Focus on form, embrace the burn.</p>
+        
+        <button onclick="startWorkout()" class="zen-button w-full font-medium">Start Workout</button>
+    </div>
+
+    <h3 class="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-tight">Focus by Muscle</h3>
+    <div class="grid grid-cols-2 gap-3 mb-8">
+        <div class="bento-card p-4 text-center text-sm font-medium hover:bg-gray-50 cursor-pointer">Chest</div>
+        <div class="bento-card p-4 text-center text-sm font-medium hover:bg-gray-50 cursor-pointer">Back</div>
+        <div class="bento-card p-4 text-center text-sm font-medium hover:bg-gray-50 cursor-pointer">Legs</div>
+        <div class="bento-card p-4 text-center text-sm font-medium hover:bg-gray-50 cursor-pointer">Core</div>
+    </div>
+
+    <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden">
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="closeWorkout()" class="text-gray-400 text-sm">Cancel</button>
+            <span id="progress-text" class="text-xs font-bold tracking-widest">EXERCISE 1/4</span>
+            <div class="w-4"></div>
+        </div>
+
+        <div class="anime-placeholder w-full h-64 mb-6">
+            <div class="text-center">
+                <p class="text-xs uppercase tracking-widest">[ Male Anime Character ]</p>
+                <p class="text-[10px] mt-2 italic">Demonstrating Form...</p>
+            </div>
+        </div>
+
+        <h2 id="ex-name-en" class="text-2xl font-semibold mb-1">Alternating Dumbbell Curl</h2>
+        <h3 id="ex-name-es" class="text-sm text-gray-400 mb-8">Curl alterno con mancuerna</h3>
+
+        <div class="flex gap-4 mb-8">
+            <div class="flex-1">
+                <label class="block text-[10px] uppercase text-gray-400 mb-1">Weight (KG)</label>
+                <input type="number" placeholder="0" class="w-full border-b border-gray-200 py-2 focus:outline-none focus:border-black text-xl">
+            </div>
+            <div class="flex-1">
+                <label class="block text-[10px] uppercase text-gray-400 mb-1">Reps</label>
+                <input type="number" placeholder="0" class="w-full border-b border-gray-200 py-2 focus:outline-none focus:border-black text-xl">
+            </div>
+        </div>
+
+        <button onclick="nextExercise()" class="zen-button w-full mt-auto">Log Set & Next</button>
+    </div>
+
+    <script>
+        const routine = [
+            { en: "Alternating Dumbbell Curl", es: "Curl alterno con mancuerna" },
+            { en: "Barbell Curl", es: "Curl con barra" },
+            { en: "Concentration Curl", es: "Curl concentrado" },
+            { en: "Dumbbell Military Press", es: "Press militar con mancuerna" },
+            { en: "Lateral Raises", es: "Elevaciones laterales" },
+            { en: "Front Raises", es: "Elevaciones frontales" },
+            { en: "Crunches", es: "Abdominales (Upper)" },
+            { en: "Leg Raises", es: "Elevación de piernas (Lower)" },
+            { en: "Lying Oblique Crunch", es: "Crunch oblicuo acostado" }
+        ];
+
+        let currentIdx = 0;
+
+        function startWorkout() {
+            document.getElementById('workout-ui').classList.remove('hidden');
+            updateUI();
+        }
+
+        function closeWorkout() {
+            document.getElementById('workout-ui').classList.add('hidden');
+            currentIdx = 0;
+        }
+
+        function nextExercise() {
+            if (currentIdx < routine.length - 1) {
+                currentIdx++;
+                updateUI();
+            } else {
+                alert("Workout Complete! Stay Zen.");
+                closeWorkout();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('ex-name-en').innerText = routine[currentIdx].en;
+            document.getElementById('ex-name-es').innerText = routine[currentIdx].es;
+            document.getElementById('progress-text').innerText = `EXERCISE ${currentIdx + 1}/${routine.length}`;
+        }
+    </script>
+</body>
+</html>
