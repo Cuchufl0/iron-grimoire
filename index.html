@@ -7,11 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* THE LOCKDOWN: Stops all browser-like behaviors */
         * { 
             -webkit-tap-highlight-color: transparent; 
-            -webkit-touch-callout: none; /* Stops the copy/paste menu */
-            -webkit-user-select: none;   /* Stops text selection */
+            -webkit-touch-callout: none; 
+            -webkit-user-select: none;   
             user-select: none;
             touch-action: manipulation;
         }
@@ -26,7 +25,7 @@
         body { font-family: 'Inter', sans-serif; color: #1a1a1a; display: flex; flex-direction: column; }
         
         input { 
-            -webkit-user-select: auto !important; /* Allows typing in inputs */
+            -webkit-user-select: auto !important; 
             user-select: auto !important; 
         }
 
@@ -36,22 +35,33 @@
             -webkit-overflow-scrolling: touch; 
         }
 
-        /* Physical Haptic Style */
         .press-effect {
             transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.1s ease;
         }
         .is-pressed {
-            transform: scale(0.92) !important;
-            background-color: #ebebe b !important;
+            transform: scale(0.94) !important;
+            background-color: #f0f0f0 !important;
         }
         .button-pressed {
             transform: scale(0.95) !important;
-            opacity: 0.7 !important;
+            opacity: 0.8 !important;
         }
 
         .bento-card { background: white; border: 1px solid #eee; border-radius: 24px; }
         .zen-button { background: #1a1a1a; color: white; border-radius: 16px; padding: 18px; width: 100%; font-weight: 600; text-align: center; }
         .secondary-button { background: #f0f0f0; color: #555; border-radius: 16px; padding: 18px; font-weight: 600; text-align: center; }
+        
+        /* New Pill Button Style for Quit/Cancel */
+        .pill-button {
+            background: #f3f3f3;
+            color: #888;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
 
         .selection-circle {
             width: 26px; height: 26px; border-radius: 50%;
@@ -71,17 +81,17 @@
     <div id="home-screen" class="flex flex-col h-full">
         <header class="mb-10 pt-6">
             <h1 id="time-greeting" class="text-[10px] tracking-[0.3em] uppercase text-gray-400 mb-2 font-black">Loading...</h1>
-            <h2 class="text-3xl font-semibold tracking-tight">Stay focused.</h2>
+            <h2 class="text-3xl font-semibold tracking-tight italic">Zen Mode.</h2>
         </header>
 
         <div class="scroll-container">
             <div class="press-effect bento-card p-8 mb-10 border-gray-100 shadow-sm" onclick="startWorkout(fullRoutine)">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="px-3 py-1 bg-gray-50 text-[10px] rounded-full uppercase tracking-widest font-bold text-gray-400">Sequence</span>
+                    <span class="px-3 py-1 bg-gray-50 text-[10px] rounded-full uppercase tracking-widest font-bold text-gray-400">Routine</span>
                 </div>
                 <h3 class="text-2xl font-semibold mb-2">Biceps & Shoulders</h3>
-                <p class="text-sm text-gray-400 mb-8 font-medium">Standard Day 1</p>
-                <div class="zen-button">Start Routine</div>
+                <p class="text-sm text-gray-400 mb-8 font-medium">Full Day 1 Sequence</p>
+                <div class="zen-button">Start Workout</div>
             </div>
 
             <h3 class="text-[10px] font-black mb-6 text-gray-300 uppercase tracking-[0.2em]">Target Area</h3>
@@ -97,20 +107,19 @@
     <div id="selection-ui" class="fixed inset-0 bg-white z-40 p-6 hidden flex flex-col">
         <header class="mb-8 flex justify-between items-center pt-6">
             <h2 id="selection-title" class="text-3xl font-semibold">Select</h2>
-            <div onclick="closeModal('selection-ui')" class="text-gray-400 text-sm font-bold p-2">CANCEL</div>
+            <div onclick="closeModal('selection-ui')" class="press-effect pill-button">Cancel</div>
         </header>
         <div id="exercise-list" class="scroll-container mb-6 px-1"></div>
         <div class="pb-6">
-            <div onclick="startSelected()" class="press-effect zen-button">Start Session</div>
+            <div onclick="startSelected()" class="press-effect zen-button">Start Selected</div>
         </div>
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
         <div class="flex justify-between items-center mb-8 pt-6">
-            <div onclick="closeModal('workout-ui')" class="text-gray-300 text-[10px] font-black tracking-widest p-2">QUIT</div>
+            <div onclick="closeModal('workout-ui')" class="press-effect pill-button">Quit</div>
             <span id="progress-text" class="text-[10px] font-black tracking-[0.2em] text-gray-300 uppercase">1 / 4</span>
-            <div class="w-10"></div>
-        </div>
+            <div class="w-16"></div> </div>
 
         <div class="w-full h-56 bg-gray-50 rounded-[40px] flex items-center justify-center mb-10 border border-gray-100">
             <span class="text-[10px] uppercase tracking-widest text-gray-300 font-black">[ Anime Viz ]</span>
