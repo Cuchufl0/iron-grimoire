@@ -7,38 +7,86 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* Prevents bouncing and scrolling when not needed */
+        /* Global Reset & Anti-Bounce */
         html, body { 
             overscroll-behavior-y: none; 
             height: 100%; 
             overflow: hidden; 
             background-color: #fcfcfc;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         body { font-family: 'Inter', sans-serif; color: #1a1a1a; display: flex; flex-direction: column; }
         
-        /* Main containers allow scrolling only if content overflows */
         .scroll-container { 
             flex: 1; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
         }
 
-        .bento-card { background: white; border: 1px solid #eee; border-radius: 20px; transition: all 0.2s ease; }
-        .zen-button { background: #1a1a1a; color: white; border-radius: 14px; padding: 16px; width: 100%; font-weight: 500; }
-        .zen-button:active { opacity: 0.7; transform: scale(0.98); }
-        .secondary-button { background: #f0f0f0; color: #555; border-radius: 14px; padding: 16px; font-weight: 500; }
+        /* --- VIRTUAL HAPTICS & REACTIONS --- */
+        
+        /* Bento Cards (Muscle Groups) */
+        .bento-card { 
+            background: white; 
+            border: 1px solid #eee; 
+            border-radius: 20px; 
+            transition: transform 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease;
+            cursor: pointer;
+        }
+        .bento-card:active { 
+            transform: scale(0.96); 
+            background-color: #f5f5f5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
 
-        /* Numbered Circle Style */
+        /* Primary Buttons (Start/Next) */
+        .zen-button { 
+            background: #1a1a1a; 
+            color: white; 
+            border-radius: 14px; 
+            padding: 16px; 
+            width: 100%; 
+            font-weight: 500;
+            transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1), opacity 0.1s ease;
+        }
+        .zen-button:active { 
+            transform: scale(0.95); 
+            opacity: 0.85; 
+        }
+
+        /* Secondary Buttons (Back/Cancel) */
+        .secondary-button { 
+            background: #f0f0f0; 
+            color: #555; 
+            border-radius: 14px; 
+            padding: 16px; 
+            font-weight: 500;
+            transition: transform 0.1s ease;
+        }
+        .secondary-button:active { 
+            transform: scale(0.95); 
+            background-color: #e5e5e5;
+        }
+
+        /* Selection List Items */
+        .list-item-active {
+            background-color: #f9f9f9 !important;
+            border-color: #1a1a1a !important;
+        }
+
+        /* Numbered Circle */
         .selection-circle {
             width: 24px; height: 24px; border-radius: 50%;
             border: 2px solid #ddd; display: flex; align-items: center;
             justify-content: center; font-size: 12px; font-weight: 600;
-            transition: all 0.2s; color: transparent;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy pop effect */
+            color: transparent;
         }
         .selection-circle.active {
             background: #1a1a1a; border-color: #1a1a1a; color: white;
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -46,26 +94,26 @@
 
     <div id="home-screen" class="flex flex-col h-full">
         <header class="mb-8 pt-4">
-            <h1 id="time-greeting" class="text-xs tracking-widest uppercase text-gray-400 mb-1">Loading...</h1>
-            <h2 class="text-2xl font-semibold italic">Stay focused.</h2>
+            <h1 id="time-greeting" class="text-xs tracking-widest uppercase text-gray-400 mb-1 font-semibold">Loading...</h1>
+            <h2 class="text-2xl font-semibold italic opacity-80">Stay focused.</h2>
         </header>
 
         <div class="scroll-container">
-            <div class="bento-card p-6 mb-8 border-gray-100 shadow-sm">
+            <div class="bento-card p-6 mb-8 border-gray-100 shadow-sm active:shadow-none">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="px-3 py-1 bg-gray-100 text-[10px] rounded-full uppercase tracking-wider font-semibold">Routine</span>
+                    <span class="px-3 py-1 bg-gray-50 text-[10px] rounded-full uppercase tracking-wider font-bold text-gray-400">Sequence</span>
                 </div>
                 <h3 class="text-xl font-medium mb-1">Biceps & Shoulders</h3>
-                <p class="text-sm text-gray-500 mb-6 italic text-gray-400">Standard Sequence</p>
+                <p class="text-xs text-gray-400 mb-6 italic">Dublin Gym Session</p>
                 <button onclick="startWorkout(fullRoutine)" class="zen-button">Start Routine</button>
             </div>
 
-            <h3 class="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-tight">Explore</h3>
+            <h3 class="text-xs font-bold mb-4 text-gray-300 uppercase tracking-widest">Target Area</h3>
             <div class="grid grid-cols-2 gap-4 mb-8">
-                <button onclick="openSelection('Chest')" class="bento-card p-5 text-center text-sm font-medium shadow-sm">Chest</button>
-                <button onclick="openSelection('Back')" class="bento-card p-5 text-center text-sm font-medium shadow-sm">Back</button>
-                <button onclick="openSelection('Legs')" class="bento-card p-5 text-center text-sm font-medium shadow-sm">Legs</button>
-                <button onclick="openSelection('Core')" class="bento-card p-5 text-center text-sm font-medium shadow-sm">Core</button>
+                <div onclick="openSelection('Chest')" class="bento-card p-6 text-center text-sm font-semibold">Chest</div>
+                <div onclick="openSelection('Back')" class="bento-card p-6 text-center text-sm font-semibold">Back</div>
+                <div onclick="openSelection('Legs')" class="bento-card p-6 text-center text-sm font-semibold">Legs</div>
+                <div onclick="openSelection('Core')" class="bento-card p-6 text-center text-sm font-semibold">Core</div>
             </div>
         </div>
     </div>
@@ -73,37 +121,36 @@
     <div id="selection-ui" class="fixed inset-0 bg-white z-40 p-6 hidden flex flex-col">
         <header class="mb-6 flex justify-between items-center pt-4">
             <h2 id="selection-title" class="text-2xl font-semibold">Select</h2>
-            <button onclick="closeModal('selection-ui')" class="text-gray-400 text-sm">Cancel</button>
+            <div onclick="closeModal('selection-ui')" class="text-gray-400 text-sm font-medium px-2 py-1 active:opacity-50">Cancel</div>
         </header>
-        <div id="exercise-list" class="scroll-container mb-6">
-            </div>
+        <div id="exercise-list" class="scroll-container mb-6"></div>
         <div class="pb-4">
-            <button onclick="startSelected()" class="zen-button">Start Selected</button>
+            <button onclick="startSelected()" class="zen-button">Start Session</button>
         </div>
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
         <div class="flex justify-between items-center mb-6 pt-4">
-            <button onclick="closeModal('workout-ui')" class="text-gray-400 text-sm">Quit</button>
-            <span id="progress-text" class="text-xs font-bold tracking-widest uppercase text-gray-400">1 / 4</span>
+            <div onclick="closeModal('workout-ui')" class="text-gray-300 text-sm font-bold active:text-red-400">QUIT</div>
+            <span id="progress-text" class="text-[10px] font-black tracking-[0.2em] uppercase text-gray-300">1 / 4</span>
             <div class="w-8"></div>
         </div>
 
-        <div class="w-full h-48 bg-gray-50 rounded-3xl flex items-center justify-center mb-8 border border-gray-100">
-            <span class="text-[10px] uppercase tracking-widest text-gray-300 font-medium">[ Anime Instruction ]</span>
+        <div class="w-full h-48 bg-gray-50 rounded-[32px] flex items-center justify-center mb-8 border border-gray-100">
+            <span class="text-[10px] uppercase tracking-widest text-gray-300 font-bold">[ Anime Viz ]</span>
         </div>
 
-        <h2 id="ex-name-en" class="text-2xl font-semibold mb-1">---</h2>
-        <h3 id="ex-name-es" class="text-sm text-gray-400 mb-10 italic">---</h3>
+        <h2 id="ex-name-en" class="text-2xl font-bold mb-1 tracking-tight">---</h2>
+        <h3 id="ex-name-es" class="text-sm text-gray-300 mb-10 italic font-medium">---</h3>
 
         <div class="flex gap-6 mb-12">
             <div class="flex-1">
-                <label class="block text-[10px] uppercase text-gray-400 font-bold mb-2">Weight (KG)</label>
-                <input type="number" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-2xl transition-colors">
+                <label class="block text-[10px] uppercase text-gray-300 font-black mb-2">Weight</label>
+                <input type="number" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-3xl font-light transition-colors">
             </div>
             <div class="flex-1">
-                <label class="block text-[10px] uppercase text-gray-400 font-bold mb-2">Reps</label>
-                <input type="number" id="reps-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-2xl transition-colors">
+                <label class="block text-[10px] uppercase text-gray-300 font-black mb-2">Reps</label>
+                <input type="number" id="reps-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-3xl font-light transition-colors">
             </div>
         </div>
 
@@ -162,18 +209,16 @@
         function renderSelectionList() {
             const listDiv = document.getElementById('exercise-list');
             listDiv.innerHTML = '';
-            
             currentMuscleGroupOptions.forEach((ex) => {
                 const orderIndex = selectedInMenu.findIndex(s => s.en === ex.en);
                 const isActive = orderIndex > -1;
-                
                 const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-5 mb-3 bento-card border-gray-50 cursor-pointer';
+                item.className = `flex items-center justify-between p-5 mb-3 bento-card ${isActive ? 'list-item-active' : ''}`;
                 item.onclick = () => toggleEx(ex);
                 item.innerHTML = `
                     <div>
-                        <p class="text-sm font-medium">${ex.en}</p>
-                        <p class="text-[10px] text-gray-400 uppercase tracking-wide">${ex.es}</p>
+                        <p class="text-sm font-bold tracking-tight">${ex.en}</p>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest font-black">${ex.es}</p>
                     </div>
                     <div class="selection-circle ${isActive ? 'active' : ''}">
                         ${isActive ? (orderIndex + 1) : ''}
@@ -185,16 +230,13 @@
 
         function toggleEx(exercise) {
             const idx = selectedInMenu.findIndex(s => s.en === exercise.en);
-            if(idx > -1) {
-                selectedInMenu.splice(idx, 1);
-            } else {
-                selectedInMenu.push(exercise);
-            }
+            if(idx > -1) selectedInMenu.splice(idx, 1);
+            else selectedInMenu.push(exercise);
             renderSelectionList();
         }
 
         function startSelected() {
-            if(selectedInMenu.length === 0) return alert("Select the order of exercises!");
+            if(selectedInMenu.length === 0) return;
             closeModal('selection-ui');
             startWorkout(selectedInMenu);
         }
@@ -215,7 +257,7 @@
                 currentIdx++;
                 updateUI();
             } else {
-                alert("Session Finished. Well done.");
+                alert("Session Finished.");
                 closeModal('workout-ui');
             }
         }
@@ -235,7 +277,7 @@
             document.getElementById('weight-input').value = "";
             document.getElementById('reps-input').value = "";
             document.getElementById('back-btn').style.visibility = (currentIdx === 0) ? 'hidden' : 'visible';
-            document.getElementById('next-btn').innerText = (currentIdx === activeSession.length - 1) ? 'Finish' : 'Log Set & Next';
+            document.getElementById('next-btn').innerText = (currentIdx === activeSession.length - 1) ? 'Finish' : 'Next';
         }
 
         updateGreeting();
