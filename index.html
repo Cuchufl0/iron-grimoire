@@ -7,81 +7,57 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* Global Reset & Anti-Bounce */
+        /* THE LOCKDOWN: Stops all browser-like behaviors */
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-touch-callout: none; /* Stops the copy/paste menu */
+            -webkit-user-select: none;   /* Stops text selection */
+            user-select: none;
+            touch-action: manipulation;
+        }
+
         html, body { 
             overscroll-behavior-y: none; 
             height: 100%; 
             overflow: hidden; 
             background-color: #fcfcfc;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
         }
 
         body { font-family: 'Inter', sans-serif; color: #1a1a1a; display: flex; flex-direction: column; }
         
+        input { 
+            -webkit-user-select: auto !important; /* Allows typing in inputs */
+            user-select: auto !important; 
+        }
+
         .scroll-container { 
             flex: 1; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
         }
 
-        /* --- VIRTUAL HAPTICS & REACTIONS --- */
-        
-        /* Bento Cards (Muscle Groups) */
-        .bento-card { 
-            background: white; 
-            border: 1px solid #eee; 
-            border-radius: 20px; 
-            transition: transform 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease;
-            cursor: pointer;
+        /* Physical Haptic Style */
+        .press-effect {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.1s ease;
         }
-        .bento-card:active { 
-            transform: scale(0.96); 
-            background-color: #f5f5f5;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        .is-pressed {
+            transform: scale(0.92) !important;
+            background-color: #ebebe b !important;
+        }
+        .button-pressed {
+            transform: scale(0.95) !important;
+            opacity: 0.7 !important;
         }
 
-        /* Primary Buttons (Start/Next) */
-        .zen-button { 
-            background: #1a1a1a; 
-            color: white; 
-            border-radius: 14px; 
-            padding: 16px; 
-            width: 100%; 
-            font-weight: 500;
-            transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1), opacity 0.1s ease;
-        }
-        .zen-button:active { 
-            transform: scale(0.95); 
-            opacity: 0.85; 
-        }
+        .bento-card { background: white; border: 1px solid #eee; border-radius: 24px; }
+        .zen-button { background: #1a1a1a; color: white; border-radius: 16px; padding: 18px; width: 100%; font-weight: 600; text-align: center; }
+        .secondary-button { background: #f0f0f0; color: #555; border-radius: 16px; padding: 18px; font-weight: 600; text-align: center; }
 
-        /* Secondary Buttons (Back/Cancel) */
-        .secondary-button { 
-            background: #f0f0f0; 
-            color: #555; 
-            border-radius: 14px; 
-            padding: 16px; 
-            font-weight: 500;
-            transition: transform 0.1s ease;
-        }
-        .secondary-button:active { 
-            transform: scale(0.95); 
-            background-color: #e5e5e5;
-        }
-
-        /* Selection List Items */
-        .list-item-active {
-            background-color: #f9f9f9 !important;
-            border-color: #1a1a1a !important;
-        }
-
-        /* Numbered Circle */
         .selection-circle {
-            width: 24px; height: 24px; border-radius: 50%;
+            width: 26px; height: 26px; border-radius: 50%;
             border: 2px solid #ddd; display: flex; align-items: center;
-            justify-content: center; font-size: 12px; font-weight: 600;
-            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy pop effect */
+            justify-content: center; font-size: 13px; font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: transparent;
         }
         .selection-circle.active {
@@ -90,77 +66,88 @@
         }
     </style>
 </head>
-<body class="p-6">
+<body class="p-6 pb-10">
 
     <div id="home-screen" class="flex flex-col h-full">
-        <header class="mb-8 pt-4">
-            <h1 id="time-greeting" class="text-xs tracking-widest uppercase text-gray-400 mb-1 font-semibold">Loading...</h1>
-            <h2 class="text-2xl font-semibold italic opacity-80">Stay focused.</h2>
+        <header class="mb-10 pt-6">
+            <h1 id="time-greeting" class="text-[10px] tracking-[0.3em] uppercase text-gray-400 mb-2 font-black">Loading...</h1>
+            <h2 class="text-3xl font-semibold tracking-tight">Stay focused.</h2>
         </header>
 
         <div class="scroll-container">
-            <div class="bento-card p-6 mb-8 border-gray-100 shadow-sm active:shadow-none">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="px-3 py-1 bg-gray-50 text-[10px] rounded-full uppercase tracking-wider font-bold text-gray-400">Sequence</span>
+            <div class="press-effect bento-card p-8 mb-10 border-gray-100 shadow-sm" onclick="startWorkout(fullRoutine)">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="px-3 py-1 bg-gray-50 text-[10px] rounded-full uppercase tracking-widest font-bold text-gray-400">Sequence</span>
                 </div>
-                <h3 class="text-xl font-medium mb-1">Biceps & Shoulders</h3>
-                <p class="text-xs text-gray-400 mb-6 italic">Dublin Gym Session</p>
-                <button onclick="startWorkout(fullRoutine)" class="zen-button">Start Routine</button>
+                <h3 class="text-2xl font-semibold mb-2">Biceps & Shoulders</h3>
+                <p class="text-sm text-gray-400 mb-8 font-medium">Standard Day 1</p>
+                <div class="zen-button">Start Routine</div>
             </div>
 
-            <h3 class="text-xs font-bold mb-4 text-gray-300 uppercase tracking-widest">Target Area</h3>
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div onclick="openSelection('Chest')" class="bento-card p-6 text-center text-sm font-semibold">Chest</div>
-                <div onclick="openSelection('Back')" class="bento-card p-6 text-center text-sm font-semibold">Back</div>
-                <div onclick="openSelection('Legs')" class="bento-card p-6 text-center text-sm font-semibold">Legs</div>
-                <div onclick="openSelection('Core')" class="bento-card p-6 text-center text-sm font-semibold">Core</div>
+            <h3 class="text-[10px] font-black mb-6 text-gray-300 uppercase tracking-[0.2em]">Target Area</h3>
+            <div class="grid grid-cols-2 gap-5">
+                <div onclick="openSelection('Chest')" class="press-effect bento-card p-8 text-center text-sm font-bold tracking-tight">Chest</div>
+                <div onclick="openSelection('Back')" class="press-effect bento-card p-8 text-center text-sm font-bold tracking-tight">Back</div>
+                <div onclick="openSelection('Legs')" class="press-effect bento-card p-8 text-center text-sm font-bold tracking-tight">Legs</div>
+                <div onclick="openSelection('Core')" class="press-effect bento-card p-8 text-center text-sm font-bold tracking-tight">Core</div>
             </div>
         </div>
     </div>
 
     <div id="selection-ui" class="fixed inset-0 bg-white z-40 p-6 hidden flex flex-col">
-        <header class="mb-6 flex justify-between items-center pt-4">
-            <h2 id="selection-title" class="text-2xl font-semibold">Select</h2>
-            <div onclick="closeModal('selection-ui')" class="text-gray-400 text-sm font-medium px-2 py-1 active:opacity-50">Cancel</div>
+        <header class="mb-8 flex justify-between items-center pt-6">
+            <h2 id="selection-title" class="text-3xl font-semibold">Select</h2>
+            <div onclick="closeModal('selection-ui')" class="text-gray-400 text-sm font-bold p-2">CANCEL</div>
         </header>
-        <div id="exercise-list" class="scroll-container mb-6"></div>
-        <div class="pb-4">
-            <button onclick="startSelected()" class="zen-button">Start Session</button>
+        <div id="exercise-list" class="scroll-container mb-6 px-1"></div>
+        <div class="pb-6">
+            <div onclick="startSelected()" class="press-effect zen-button">Start Session</div>
         </div>
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
-        <div class="flex justify-between items-center mb-6 pt-4">
-            <div onclick="closeModal('workout-ui')" class="text-gray-300 text-sm font-bold active:text-red-400">QUIT</div>
-            <span id="progress-text" class="text-[10px] font-black tracking-[0.2em] uppercase text-gray-300">1 / 4</span>
-            <div class="w-8"></div>
+        <div class="flex justify-between items-center mb-8 pt-6">
+            <div onclick="closeModal('workout-ui')" class="text-gray-300 text-[10px] font-black tracking-widest p-2">QUIT</div>
+            <span id="progress-text" class="text-[10px] font-black tracking-[0.2em] text-gray-300 uppercase">1 / 4</span>
+            <div class="w-10"></div>
         </div>
 
-        <div class="w-full h-48 bg-gray-50 rounded-[32px] flex items-center justify-center mb-8 border border-gray-100">
-            <span class="text-[10px] uppercase tracking-widest text-gray-300 font-bold">[ Anime Viz ]</span>
+        <div class="w-full h-56 bg-gray-50 rounded-[40px] flex items-center justify-center mb-10 border border-gray-100">
+            <span class="text-[10px] uppercase tracking-widest text-gray-300 font-black">[ Anime Viz ]</span>
         </div>
 
         <h2 id="ex-name-en" class="text-2xl font-bold mb-1 tracking-tight">---</h2>
-        <h3 id="ex-name-es" class="text-sm text-gray-300 mb-10 italic font-medium">---</h3>
+        <h3 id="ex-name-es" class="text-sm text-gray-300 mb-12 italic font-semibold">---</h3>
 
-        <div class="flex gap-6 mb-12">
+        <div class="flex gap-8 mb-12">
             <div class="flex-1">
-                <label class="block text-[10px] uppercase text-gray-300 font-black mb-2">Weight</label>
-                <input type="number" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-3xl font-light transition-colors">
+                <label class="block text-[10px] uppercase text-gray-300 font-black mb-3 tracking-widest">Weight</label>
+                <input type="number" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-4xl font-light">
             </div>
             <div class="flex-1">
-                <label class="block text-[10px] uppercase text-gray-300 font-black mb-2">Reps</label>
-                <input type="number" id="reps-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-3xl font-light transition-colors">
+                <label class="block text-[10px] uppercase text-gray-300 font-black mb-3 tracking-widest">Reps</label>
+                <input type="number" id="reps-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 focus:outline-none focus:border-black text-4xl font-light">
             </div>
         </div>
 
-        <div class="mt-auto grid grid-cols-2 gap-4 pb-4">
-            <button id="back-btn" onclick="prevExercise()" class="secondary-button">Back</button>
-            <button id="next-btn" onclick="nextExercise()" class="zen-button">Next</button>
+        <div class="mt-auto grid grid-cols-2 gap-4 pb-6">
+            <div id="back-btn" onclick="prevExercise()" class="press-effect secondary-button">Back</div>
+            <div id="next-btn" onclick="nextExercise()" class="press-effect zen-button">Next</div>
         </div>
     </div>
 
     <script>
+        // Haptic Feedback Logic
+        document.addEventListener('touchstart', (e) => {
+            const el = e.target.closest('.press-effect');
+            if (el) el.classList.add(el.classList.contains('zen-button') ? 'button-pressed' : 'is-pressed');
+        }, {passive: true});
+
+        document.addEventListener('touchend', (e) => {
+            const el = e.target.closest('.press-effect');
+            if (el) el.classList.remove('is-pressed', 'button-pressed');
+        }, {passive: true});
+
         const fullRoutine = [
             { en: "Alternating Dumbbell Curl", es: "Curl alterno con mancuerna", group: "Biceps" },
             { en: "Barbell Curl", es: "Curl con barra", group: "Biceps" },
@@ -213,16 +200,14 @@
                 const orderIndex = selectedInMenu.findIndex(s => s.en === ex.en);
                 const isActive = orderIndex > -1;
                 const item = document.createElement('div');
-                item.className = `flex items-center justify-between p-5 mb-3 bento-card ${isActive ? 'list-item-active' : ''}`;
+                item.className = `flex items-center justify-between p-6 mb-4 bento-card press-effect ${isActive ? 'border-black' : ''}`;
                 item.onclick = () => toggleEx(ex);
                 item.innerHTML = `
                     <div>
-                        <p class="text-sm font-bold tracking-tight">${ex.en}</p>
+                        <p class="text-md font-bold tracking-tight">${ex.en}</p>
                         <p class="text-[10px] text-gray-300 uppercase tracking-widest font-black">${ex.es}</p>
                     </div>
-                    <div class="selection-circle ${isActive ? 'active' : ''}">
-                        ${isActive ? (orderIndex + 1) : ''}
-                    </div>
+                    <div class="selection-circle ${isActive ? 'active' : ''}">${isActive ? (orderIndex + 1) : ''}</div>
                 `;
                 listDiv.appendChild(item);
             });
