@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zen-gym-v2';
+const CACHE_NAME = 'zen-gym-v3';
 
 self.addEventListener('install', (e) => {
     self.skipWaiting();
@@ -15,10 +15,11 @@ self.addEventListener('install', (e) => {
     );
 });
 
+// THE NETWORK-FIRST PROTOCOL
 self.addEventListener('fetch', (e) => {
     e.respondWith(
-        caches.match(e.request).then((response) => {
-            return response || fetch(e.request);
+        fetch(e.request).catch(() => {
+            return caches.match(e.request);
         })
     );
 });
