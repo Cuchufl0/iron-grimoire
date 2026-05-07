@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#1a1a1a">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/1a1a1a/ffffff?text=Z">
     
-    <title>Zen Gym - Fixed</title>
+    <title>Zen Gym - V5.9.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -139,6 +139,7 @@
                 </div>
                 <div class="xp-container mt-4"><div id="xp-bar-fill" class="xp-bar"></div></div>
             </div>
+            <p id="flavor-quote" class="text-[10px] text-gray-400 mt-6 font-medium italic opacity-70 px-2">---</p>
         </div>
 
         <div class="scroll-container pb-32">
@@ -192,7 +193,7 @@
         
         <div class="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-6">
             <div class="aura-container">
-                <img id="active-character" src="default.png" class="w-full h-full object-contain relative z-10 transition-opacity duration-300">
+                <img id="active-character" src="default.png" class="w-full h-full object-contain relative z-10 transition-opacity duration-300" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjwvc3ZnPg==';">
                 <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white/90 backdrop-blur-md px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20 shadow-sm">&nbsp;</span>
             </div>
             
@@ -561,7 +562,15 @@
         function startTimer(seconds) { clearInterval(timerInterval); let time = seconds; updateTimerUI(seconds); document.getElementById('timer-bar').classList.add('show'); document.getElementById('ui-shield').classList.add('active'); document.getElementById('timer-display').textContent = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').textContent = time; if(time <= 0) skipTimer(); }, 1000); }
         function adjustTimer(seconds) { clearInterval(timerInterval); let time = seconds; updateTimerUI(seconds); document.getElementById('timer-display').textContent = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').textContent = time; if(time <= 0) skipTimer(); }, 1000); }
         function updateTimerUI(activeSecs) { document.getElementById('btn-timer-30').className = activeSecs === 30 ? "pill bg-white/40 text-white cursor-pointer press-effect shadow-lg" : "pill bg-white/10 text-white cursor-pointer press-effect"; document.getElementById('btn-timer-60').className = activeSecs === 60 ? "pill bg-white/40 text-white cursor-pointer press-effect shadow-lg" : "pill bg-white/10 text-white cursor-pointer press-effect"; document.getElementById('btn-timer-120').className = activeSecs === 120 ? "pill bg-white/40 text-white cursor-pointer press-effect shadow-lg" : "pill bg-white/10 text-white cursor-pointer press-effect"; }
-        function updateFlavor() { const h = new Date().getHours(); document.getElementById('time-greeting').textContent = `Timeline: ${h < 12 ? "Dawn" : h < 18 ? "Solar" : "Twilight"}`; const quotes = ["Keep moving forward.", "Arise.", "The journey is what matters.", "I have no enemies..."]; document.getElementById('flavor-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)]; }
+        
+        function updateFlavor() { 
+            const h = new Date().getHours(); 
+            document.getElementById('time-greeting').textContent = `Timeline: ${h < 12 ? "Dawn" : h < 18 ? "Solar" : "Twilight"}`; 
+            const quotes = ["Keep moving forward.", "Arise.", "The journey is what matters.", "I have no enemies..."]; 
+            if(document.getElementById('flavor-quote')) {
+                document.getElementById('flavor-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)]; 
+            }
+        }
         
         function updateUI() {
             const ex = activeSession[currentIdx]; document.getElementById('ex-name-en').textContent = ex.en; document.getElementById('ex-name-es').textContent = ex.es; document.getElementById('progress-text').textContent = `${currentIdx + 1}/${activeSession.length}`;
