@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#1a1a1a">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/1a1a1a/ffffff?text=Z">
     
-    <title>Zen Gym - Summary</title>
+    <title>Zen Gym - The Grand Library</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -141,6 +141,7 @@
                 <div class="flex flex-col mb-1 pr-20"><h2 id="user-rank-title" class="text-xl font-extrabold tracking-tighter text-gray-800">Seeker</h2><span id="user-level" class="text-xs font-black uppercase text-gray-400 mt-1">Level 1</span></div>
                 <div class="xp-container mt-6"><div id="xp-bar-fill" class="xp-bar"></div></div>
             </div>
+            <p id="flavor-quote" class="text-[10px] text-gray-400 mt-6 font-medium italic opacity-70 px-2">---</p>
         </div>
 
         <div class="scroll-container pb-32">
@@ -218,65 +219,117 @@
         const AURA_COLORS = { 'Chest': '#ff4d4d', 'Back': '#9d4edd', 'Arms': '#0077ff', 'Legs': '#38b000', 'Shoulders': '#00f5d4', 'Core': '#ffbe0b', 'Default': '#1a1a1a' };
 
         const fullLibrary = [
+            // CHEST
             { en: "Pushups", es: "Flexiones", group: "Chest", target: "Chest", equip: "bodyweight" },
             { en: "Decline Pushups", es: "Flexiones Declinadas", group: "Chest", target: "Upper Chest", equip: "bodyweight" },
+            { en: "Incline Pushups", es: "Flexiones Inclinadas", group: "Chest", target: "Lower Chest", equip: "bodyweight" },
             { en: "Chest Dips", es: "Fondos de Pecho", group: "Chest", target: "Lower Chest", equip: "bodyweight" },
-            { en: "Barbell Bench Press", es: "Press de Banca", group: "Chest", target: "Chest", equip: "barbell" },
+            { en: "Barbell Bench Press", es: "Press de Banca (Barra)", group: "Chest", target: "Chest", equip: "barbell" },
             { en: "Incline Barbell Press", es: "Press Inclinado (Barra)", group: "Chest", target: "Upper Chest", equip: "barbell" },
-            { en: "Dumbbell Bench Press", es: "Press Mancuernas", group: "Chest", target: "Chest", equip: "dumbbell" },
-            { en: "Incline DB Press", es: "Press Inclinado (Manc.)", group: "Chest", target: "Upper Chest", equip: "dumbbell" },
-            { en: "Pec Deck Fly", es: "Pec Deck", group: "Chest", target: "Chest", equip: "machine" },
+            { en: "Decline Barbell Press", es: "Press Declinado (Barra)", group: "Chest", target: "Lower Chest", equip: "barbell" },
+            { en: "Dumbbell Bench Press", es: "Press de Banca (Manc)", group: "Chest", target: "Chest", equip: "dumbbell" },
+            { en: "Incline DB Press", es: "Press Inclinado (Manc)", group: "Chest", target: "Upper Chest", equip: "dumbbell" },
+            { en: "Decline DB Press", es: "Press Declinado (Manc)", group: "Chest", target: "Lower Chest", equip: "dumbbell" },
+            { en: "Dumbbell Flys", es: "Aperturas con Mancuernas", group: "Chest", target: "Chest", equip: "dumbbell" },
+            { en: "Incline DB Flys", es: "Aperturas Inclinadas", group: "Chest", target: "Upper Chest", equip: "dumbbell" },
+            { en: "Pec Deck Fly", es: "Pec Deck / Contrator", group: "Chest", target: "Chest", equip: "machine" },
+            { en: "Machine Chest Press", es: "Press de Pecho Máquina", group: "Chest", target: "Chest", equip: "machine" },
+            { en: "Incline Machine Press", es: "Press Inclinado Máquina", group: "Chest", target: "Upper Chest", equip: "machine" },
             { en: "Cable Crossovers", es: "Cruces en Polea", group: "Chest", target: "Chest", equip: "cable" },
             { en: "Low-to-High Cable Fly", es: "Cruces Ascendentes", group: "Chest", target: "Upper Chest", equip: "cable" },
-
-            { en: "Pull-ups", es: "Dominadas", group: "Back", target: "Lats", equip: "bodyweight" },
+            { en: "High-to-Low Cable Fly", es: "Cruces Descendentes", group: "Chest", target: "Lower Chest", equip: "cable" },
+            { en: "Dumbbell Pullover", es: "Pullover con Mancuerna", group: "Chest", target: "Chest", equip: "dumbbell" },
+            
+            // BACK
+            { en: "Pull-ups", es: "Dominadas Prinas", group: "Back", target: "Lats", equip: "bodyweight" },
             { en: "Chin-ups", es: "Dominadas Supinas", group: "Back", target: "Lats / Biceps", equip: "bodyweight" },
             { en: "Barbell Row", es: "Remo con Barra", group: "Back", target: "Back Thickness", equip: "barbell" },
-            { en: "Dumbbell Row", es: "Remo con Mancuerna", group: "Back", target: "Lats", equip: "dumbbell" },
+            { en: "Pendlay Row", es: "Remo Pendlay", group: "Back", target: "Mid Back", equip: "barbell" },
+            { en: "Dumbbell Row", es: "Remo a una mano", group: "Back", target: "Lats", equip: "dumbbell" },
+            { en: "Incline DB Row", es: "Remo Inclinado (Manc)", group: "Back", target: "Mid Back", equip: "dumbbell" },
             { en: "Lat Pulldown", es: "Jalón al Pecho", group: "Back", target: "Lats", equip: "cable" },
-            { en: "Seated Cable Row", es: "Remo Sentado", group: "Back", target: "Mid Back", equip: "cable" },
-            { en: "T-Bar Row", es: "Remo en T", group: "Back", target: "Back Thickness", equip: "machine" },
+            { en: "Reverse Grip Pulldown", es: "Jalón Supino", group: "Back", target: "Lats / Lower", equip: "cable" },
+            { en: "V-Bar Pulldown", es: "Jalón Agarre Estrecho", group: "Back", target: "Lats", equip: "cable" },
+            { en: "Seated Cable Row", es: "Remo Sentado Polea", group: "Back", target: "Mid Back", equip: "cable" },
             { en: "Straight Arm Pulldown", es: "Jalón Brazos Rectos", group: "Back", target: "Lats", equip: "cable" },
+            { en: "T-Bar Row", es: "Remo en T", group: "Back", target: "Back Thickness", equip: "machine" },
+            { en: "Machine Row", es: "Remo en Máquina", group: "Back", target: "Mid Back", equip: "machine" },
+            { en: "Hyperextensions", es: "Hipers", group: "Back", target: "Lower Back", equip: "bodyweight" },
+            { en: "Deadlift", es: "Peso Muerto Tradicional", group: "Back", target: "Lower Back", equip: "barbell" },
 
+            // SHOULDERS
             { en: "Pike Pushups", es: "Flexiones Lucio", group: "Shoulders", target: "Front Delts", equip: "bodyweight" },
             { en: "Overhead Press", es: "Press Militar (Barra)", group: "Shoulders", target: "Front Delts", equip: "barbell" },
-            { en: "Dumbbell Military Press", es: "Press Militar (Manc.)", group: "Shoulders", target: "Front Delts", equip: "dumbbell" },
+            { en: "Dumbbell Military Press", es: "Press Militar (Manc)", group: "Shoulders", target: "Front Delts", equip: "dumbbell" },
             { en: "Arnold Press", es: "Press Arnold", group: "Shoulders", target: "Shoulders", equip: "dumbbell" },
+            { en: "Machine Shoulder Press", es: "Press Hombros Máquina", group: "Shoulders", target: "Front Delts", equip: "machine" },
             { en: "Lateral Raises", es: "Elevaciones Laterales", group: "Shoulders", target: "Side Delts", equip: "dumbbell" },
             { en: "Cable Lateral Raises", es: "Laterales en Polea", group: "Shoulders", target: "Side Delts", equip: "cable" },
+            { en: "Machine Lateral Raises", es: "Laterales en Máquina", group: "Shoulders", target: "Side Delts", equip: "machine" },
+            { en: "Front Raises (DB)", es: "Elevaciones Frontales", group: "Shoulders", target: "Front Delts", equip: "dumbbell" },
+            { en: "Front Raises (Cable)", es: "Frontales en Polea", group: "Shoulders", target: "Front Delts", equip: "cable" },
             { en: "Face Pulls", es: "Face Pulls", group: "Shoulders", target: "Rear Delts", equip: "cable" },
             { en: "Reverse Pec Deck", es: "Pájaros en Máquina", group: "Shoulders", target: "Rear Delts", equip: "machine" },
+            { en: "DB Rear Delt Flys", es: "Pájaros con Mancuerna", group: "Shoulders", target: "Rear Delts", equip: "dumbbell" },
+            { en: "Dumbbell Shrugs", es: "Encogimientos (Manc)", group: "Shoulders", target: "Traps", equip: "dumbbell" },
+            { en: "Barbell Shrugs", es: "Encogimientos (Barra)", group: "Shoulders", target: "Traps", equip: "barbell" },
+            { en: "Upright Row (BB)", es: "Remo al Mentón (Barra)", group: "Shoulders", target: "Side Delts", equip: "barbell" },
+            { en: "Upright Row (Cable)", es: "Remo Mentón (Polea)", group: "Shoulders", target: "Side Delts", equip: "cable" },
 
-            { en: "Tricep Dips", es: "Fondos de Tríceps", group: "Arms", target: "Triceps", equip: "bodyweight" },
+            // ARMS (Biceps & Triceps)
             { en: "Barbell Curl", es: "Curl con Barra", group: "Arms", target: "Biceps", equip: "barbell" },
-            { en: "Alternating DB Curl", es: "Curl Alterno", group: "Arms", target: "Biceps", equip: "dumbbell" },
+            { en: "EZ Bar Curl", es: "Curl Barra EZ", group: "Arms", target: "Biceps", equip: "barbell" },
+            { en: "Alternating DB Curl", es: "Curl Alterno (Manc)", group: "Arms", target: "Biceps", equip: "dumbbell" },
             { en: "Hammer Curls", es: "Curl Martillo", group: "Arms", target: "Brachialis", equip: "dumbbell" },
             { en: "Concentration Curl", es: "Curl Concentrado", group: "Arms", target: "Biceps Peak", equip: "dumbbell" },
+            { en: "Incline DB Curl", es: "Curl Inclinado", group: "Arms", target: "Biceps Long Head", equip: "dumbbell" },
+            { en: "Preacher Curl (Machine)", es: "Curl Predicador", group: "Arms", target: "Biceps", equip: "machine" },
+            { en: "Preacher Curl (EZ)", es: "Curl Banco Scott", group: "Arms", target: "Biceps", equip: "barbell" },
             { en: "Cable Bicep Curl", es: "Curl en Polea", group: "Arms", target: "Biceps", equip: "cable" },
-            { en: "Tricep Pushdown", es: "Extensión Polea", group: "Arms", target: "Triceps", equip: "cable" },
-            { en: "Overhead Tricep Ext", es: "Extensión Tras Nuca", group: "Arms", target: "Triceps", equip: "cable" },
+            { en: "Reverse Curl (EZ)", es: "Curl Inverso", group: "Arms", target: "Forearms", equip: "barbell" },
+            
+            { en: "Tricep Dips", es: "Fondos de Tríceps", group: "Arms", target: "Triceps", equip: "bodyweight" },
+            { en: "Bench Dips", es: "Fondos en Banco", group: "Arms", target: "Triceps", equip: "bodyweight" },
+            { en: "Close Grip Bench", es: "Press Banca Cerrado", group: "Arms", target: "Triceps", equip: "barbell" },
             { en: "Skullcrushers", es: "Rompecráneos", group: "Arms", target: "Triceps", equip: "barbell" },
+            { en: "Overhead DB Extension", es: "Extensión Copa (Manc)", group: "Arms", target: "Triceps", equip: "dumbbell" },
+            { en: "Tricep Kickbacks", es: "Patada de Tríceps", group: "Arms", target: "Triceps", equip: "dumbbell" },
+            { en: "Tricep Pushdown (Straight)", es: "Extensión Polea Alta", group: "Arms", target: "Triceps", equip: "cable" },
+            { en: "Rope Pushdown", es: "Extensión con Cuerda", group: "Arms", target: "Triceps", equip: "cable" },
+            { en: "Overhead Tricep Ext (Cable)", es: "Extensión Tras Nuca Polea", group: "Arms", target: "Triceps", equip: "cable" },
+            { en: "Machine Tricep Ext", es: "Extensión Tríceps Máquina", group: "Arms", target: "Triceps", equip: "machine" },
 
+            // LEGS
             { en: "Bodyweight Squats", es: "Sentadillas Libres", group: "Legs", target: "Quads", equip: "bodyweight" },
             { en: "Walking Lunges", es: "Zancadas", group: "Legs", target: "Legs", equip: "bodyweight" },
+            { en: "Pistol Squats", es: "Sentadilla a 1 Pierna", group: "Legs", target: "Quads", equip: "bodyweight" },
             { en: "Barbell Squats", es: "Sentadilla (Barra)", group: "Legs", target: "Quads", equip: "barbell" },
             { en: "Front Squat", es: "Sentadilla Frontal", group: "Legs", target: "Quads", equip: "barbell" },
             { en: "Goblet Squat", es: "Sentadilla Goblet", group: "Legs", target: "Quads", equip: "dumbbell" },
             { en: "Bulgarian Split Squat", es: "Sentadilla Búlgara", group: "Legs", target: "Legs", equip: "dumbbell" },
             { en: "Romanian Deadlift (Bar)", es: "Peso Muerto Rumano", group: "Legs", target: "Hamstrings", equip: "barbell" },
             { en: "Romanian Deadlift (DB)", es: "PMR (Mancuernas)", group: "Legs", target: "Hamstrings", equip: "dumbbell" },
+            { en: "DB Lunges", es: "Zancadas con Mancuernas", group: "Legs", target: "Legs", equip: "dumbbell" },
             { en: "Leg Press", es: "Prensa", group: "Legs", target: "Legs", equip: "machine" },
             { en: "Hack Squat", es: "Sentadilla Hack", group: "Legs", target: "Quads", equip: "machine" },
             { en: "Leg Extension", es: "Extensión Cuádriceps", group: "Legs", target: "Quads", equip: "machine" },
-            { en: "Leg Curl", es: "Curl Isquios", group: "Legs", target: "Hamstrings", equip: "machine" },
-            { en: "Calf Raises", es: "Elevación Gemelos", group: "Legs", target: "Calves", equip: "machine" },
+            { en: "Leg Curl (Seated)", es: "Curl Isquios Sentado", group: "Legs", target: "Hamstrings", equip: "machine" },
+            { en: "Leg Curl (Lying)", es: "Curl Isquios Tumbado", group: "Legs", target: "Hamstrings", equip: "machine" },
+            { en: "Hip Thrust", es: "Empuje de Cadera", group: "Legs", target: "Glutes", equip: "barbell" },
+            { en: "Standing Calf Raises", es: "Elevación Gemelos Pie", group: "Legs", target: "Calves", equip: "machine" },
+            { en: "Seated Calf Raises", es: "Elevación Gemelos Sentado", group: "Legs", target: "Calves", equip: "machine" },
 
+            // CORE
             { en: "Plank", es: "Plancha", group: "Core", target: "Core", equip: "bodyweight" },
-            { en: "Upper Abs Crunch", es: "Upper abdomen", group: "Core", target: "Upper Abs", equip: "bodyweight" },
-            { en: "Leg Raises", es: "Lower abdomen", group: "Core", target: "Lower Abs", equip: "bodyweight" },
+            { en: "Upper Abs Crunch", es: "Crunch Abdominal", group: "Core", target: "Upper Abs", equip: "bodyweight" },
+            { en: "Leg Raises", es: "Elevación de Piernas", group: "Core", target: "Lower Abs", equip: "bodyweight" },
             { en: "Hanging Leg Raises", es: "Elevación Colgado", group: "Core", target: "Lower Abs", equip: "bodyweight" },
             { en: "Russian Twists", es: "Giro Ruso", group: "Core", target: "Obliques", equip: "bodyweight" },
+            { en: "Bicycle Crunches", es: "Bicicleta", group: "Core", target: "Obliques", equip: "bodyweight" },
+            { en: "V-Ups", es: "Abdominales en V", group: "Core", target: "Abs", equip: "bodyweight" },
+            { en: "Mountain Climbers", es: "Escaladores", group: "Core", target: "Core", equip: "bodyweight" },
             { en: "Cable Crunch", es: "Crunch en Polea", group: "Core", target: "Abs", equip: "cable" },
+            { en: "Woodchoppers", es: "Hachazos Polea", group: "Core", target: "Obliques", equip: "cable" },
             { en: "Ab Machine", es: "Máquina de Abs", group: "Core", target: "Abs", equip: "machine" }
         ];
 
@@ -295,7 +348,6 @@
         let timerInterval;
         let activeArcName = ""; 
         
-        // SESSION STATS
         let currentSessionTonnage = 0;
         let currentSessionReps = 0;
         let currentSessionPRs = 0;
@@ -474,17 +526,12 @@
         function logSet() {
             const w = parseFloat(document.getElementById('weight-input').value) || 0; const r = parseInt(document.getElementById('reps-input').value) || 0; const exName = activeSession[currentIdx].en;
             
-            // Increment Session Stats
-            currentSessionReps += r;
-            currentSessionTonnage += (w * r);
-
+            currentSessionReps += r; currentSessionTonnage += (w * r);
             sessionLog.push({ exercise: exName, weight: w, reps: r, form: currentSet }); currentExerciseLog.push({ w: w, r: r });
+            
             const currentPB = parseFloat(localStorage.getItem('zen-pb-' + exName)) || 0;
             if (w > currentPB) { 
-                localStorage.setItem('zen-pb-' + exName, w); 
-                currentSessionPRs++; // Increment PR count
-                triggerLimitBreak(w); 
-                document.getElementById('history-label').textContent = `PB: ${w}kg`; 
+                localStorage.setItem('zen-pb-' + exName, w); currentSessionPRs++; triggerLimitBreak(w); document.getElementById('history-label').textContent = `PB: ${w}kg`; 
             }
             
             const row = document.createElement('div'); row.className = "set-row"; row.innerHTML = `<span class="font-black text-gray-400 text-[9px] uppercase italic">Form ${currentSet}</span><span class="font-bold text-gray-800">${w}kg x ${r}</span>`;
@@ -507,7 +554,6 @@
 
         function startWorkout(exercises, from) {
             activeSession = exercises; sessionLog = []; currentIdx = 0;
-            // Reset Session Stats
             currentSessionTonnage = 0; currentSessionReps = 0; currentSessionPRs = 0;
             document.getElementById('active-character').src = (localStorage.getItem('zen-type') || 'lean') + '.png';
             document.getElementById('workout-ui').classList.remove('hidden'); resetForNewExercise(); 
@@ -526,7 +572,6 @@
             chronicles.unshift({ date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), summary: finalSummary, details: sessionLog });
             localStorage.setItem('zen-chronicles', JSON.stringify(chronicles)); 
             
-            // Populate and Show Summary Screen
             document.getElementById('workout-ui').classList.add('hidden'); 
             document.getElementById('summary-arc-name').textContent = finalSummary;
             document.getElementById('summary-volume').textContent = currentSessionTonnage + " KG";
@@ -535,12 +580,7 @@
             document.getElementById('summary-ui').classList.remove('hidden');
         }
 
-        function closeSummary() {
-            document.getElementById('summary-ui').classList.add('hidden');
-            updateFlavor(); 
-            resetPreparation();
-        }
-
+        function closeSummary() { document.getElementById('summary-ui').classList.add('hidden'); updateFlavor(); resetPreparation(); }
         function resetPreparation() { selectedGroups = []; Array.from(document.querySelectorAll('.arsenal-btn')).forEach(btn => { btn.className = "arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black"; }); document.getElementById('synthesis-bar').classList.remove('show'); activeArcName = ""; currentFilter = 'All'; }
 
         function retreatClick() { document.getElementById('ui-shield').classList.add('active'); document.getElementById('retreat-modal').classList.add('show'); }
