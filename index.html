@@ -10,18 +10,20 @@
     <meta name="theme-color" content="#1a1a1a">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/1a1a1a/ffffff?text=Z">
     
-    <title>Zen Gym - V5.9.4</title>
+    <title>Zen Gym - V5.9.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
         * { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; outline: none !important; caret-color: transparent !important; }
         *::-webkit-scrollbar { display: none !important; width: 0 !important; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
-        html, body { overscroll-behavior: none !important; height: 100%; overflow: hidden; background-color: #fcfcfc; color: #1a1a1a; font-family: 'Inter', sans-serif; }
+        /* ADDED touch-action: pan-y to prevent edge-swipe navigation */
+        html, body { overscroll-behavior: none !important; touch-action: pan-y; height: 100%; overflow: hidden; background-color: #fcfcfc; color: #1a1a1a; font-family: 'Inter', sans-serif; }
         input { -webkit-user-select: auto !important; user-select: auto !important; caret-color: #1a1a1a !important; text-align: center; }
         
         .scroll-container { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: 0 4px; }
-        .horizontal-scroll { display: flex; overflow-x: auto; gap: 0.5rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        /* Added touch-action to preserve horizontal scrolling for internal UI elements */
+        .horizontal-scroll { display: flex; overflow-x: auto; gap: 0.5rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         #system-overlay { position: fixed; inset: 0; z-index: 20000; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; opacity: 0; transition: opacity 0.5s ease; }
@@ -597,7 +599,7 @@
         function resetApp() { 
             if(confirm("Abandon legacy? This is permanent.")) { 
                 localStorage.clear(); 
-                window.location.href = window.location.pathname + '?reset=' + new Date().getTime();
+                window.location.replace(window.location.pathname + '?reset=' + new Date().getTime());
             } 
         }
 
