@@ -38,8 +38,8 @@
         #ui-shield.active { display: block; }
         
         /* MODALS */
-        #retreat-modal, #history-modal, #purge-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: white; border-radius: 40px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; }
-        #retreat-modal.show, #history-modal.show, #purge-modal.show { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        #retreat-modal, #history-modal, #purge-modal, #swap-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: white; border-radius: 40px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; flex-direction: column; max-height: 70vh; }
+        #retreat-modal.show, #history-modal.show, #purge-modal.show, #swap-modal.show { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
         /* BUTTONS & CARDS */
         .zen-button { background: #1a1a1a; color: white; border-radius: 24px; padding: 20px; width: 100%; font-weight: 800; text-align: center; transition: 0.2s; cursor: pointer; display: block; letter-spacing: 0.1em; text-transform: uppercase; border: none; }
@@ -79,7 +79,6 @@
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
         
-        /* TIMELINE CSS */
         .timeline-node::before { content: ''; position: absolute; left: -19px; top: 24px; width: 10px; height: 10px; background: #1a1a1a; border-radius: 50%; border: 2px solid white; z-index: 10; }
     </style>
 </head>
@@ -90,23 +89,23 @@
     <div id="ui-shield"></div>
 
     <div id="retreat-modal"><h2 class="text-2xl font-extrabold tracking-tighter mb-2 uppercase text-center text-gray-800">Abandon Quest?</h2><div onclick="cancelRetreat()" class="zen-button mb-4 press-effect mt-8">Stay the Path</div><div onclick="confirmRetreat()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 py-4 cursor-pointer text-center">Abandon</div></div>
-    
     <div id="purge-modal"><h2 class="text-2xl font-extrabold tracking-tighter mb-2 uppercase text-center text-gray-800">Purge Arc?</h2><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-10 text-center leading-relaxed">The System will permanently delete these coordinates.</p><div onclick="cancelPurge()" class="zen-button mb-4 press-effect">Cancel</div><div onclick="executePurge()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 py-4 cursor-pointer text-center">Purge</div></div>
+    
+    <div id="swap-modal">
+        <div class="flex justify-between items-center mb-6 shrink-0">
+            <h2 class="text-xl font-extrabold tracking-tighter text-gray-800 uppercase">Swap Art</h2>
+            <div onclick="closeSwapModal()" class="pill cursor-pointer">Close</div>
+        </div>
+        <div id="swap-list" class="overflow-y-auto flex-1 pr-2 space-y-3">
+            </div>
+    </div>
 
     <div id="analytics-window" class="fixed inset-0 bg-[#fcfcfc] z-[60] p-6 hidden flex flex-col">
         <header class="mb-8 flex justify-between items-center pt-8 px-2 shrink-0"><h2 class="text-3xl font-extrabold text-gray-800 tracking-tighter uppercase">Analytics</h2><div onclick="closeAnalytics()" class="pill cursor-pointer press-effect">Close</div></header>
         <div class="scroll-container pb-10">
             <div class="flex gap-4 mb-8 px-2"><div class="bento-card p-6 flex-1 text-center"><p class="text-4xl font-black text-gray-800 tracking-tighter" id="stat-workouts">0</p><p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mt-2">Workouts</p></div><div class="bento-card p-6 flex-1 text-center"><p class="text-4xl font-black text-gray-800 tracking-tighter" id="stat-sets">0</p><p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mt-2">Total Sets</p></div></div>
-            
-            <div class="px-2 mb-8">
-                <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Personal Records</h3>
-                <div id="pb-list" class="horizontal-scroll"></div>
-            </div>
-
-            <div class="px-2">
-                <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Combat History</h3>
-                <div id="analytics-timeline" class="border-l-2 border-gray-200 ml-2 pl-4 space-y-6"></div>
-            </div>
+            <div class="px-2 mb-8"><h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Personal Records</h3><div id="pb-list" class="horizontal-scroll"></div></div>
+            <div class="px-2"><h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Combat History</h3><div id="analytics-timeline" class="border-l-2 border-gray-200 ml-2 pl-4 space-y-6"></div></div>
         </div>
     </div>
 
@@ -164,7 +163,13 @@
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
-        <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0"><div onclick="retreatClick()" class="pill cursor-pointer press-effect">Retreat</div><span id="progress-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Stage 1 / 4</span><div class="w-16"></div></div>
+        
+        <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0">
+            <div onclick="retreatClick()" class="pill cursor-pointer press-effect">Retreat</div>
+            <span id="progress-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Stage 1 / 4</span>
+            <div onclick="openSwapModal()" class="pill bg-gray-200 text-gray-600 cursor-pointer press-effect text-center w-16">Swap</div>
+        </div>
+        
         <div class="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-6">
             <div class="aura-container"><div id="spirit-aura" class="aura-glow"></div><img id="active-character" src="" class="w-full h-full object-contain relative z-10"><span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">&nbsp;</span></div>
             <div class="flex justify-between items-end mb-1"><h2 id="ex-name-en" class="text-2xl font-extrabold tracking-tighter text-gray-800">---</h2><span id="set-counter" class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Form 1</span></div>
@@ -244,7 +249,7 @@
         let currentIdx = 0;
         let currentSet = 1;
         let timerInterval;
-        let activeArcName = ""; // NEW: Stores the name of the active routine
+        let activeArcName = ""; 
 
         let level = parseInt(localStorage.getItem('zen-level')) || 1;
         let totalXp = parseInt(localStorage.getItem('zen-total-xp')) || 0;
@@ -256,7 +261,6 @@
             else { document.getElementById('display-name').textContent = name; updateLevelUI(); renderArcs(); }
         };
 
-        // --- TRAINING ARCS ---
         function renderArcs() {
             const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
             const list = document.getElementById('training-arcs-list');
@@ -310,7 +314,7 @@
             if (selectedInMenu.length === 0) return alert("Select at least one technique.");
             const nameInput = document.getElementById('arc-name-input').value.trim() || "Custom Routine";
             const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
-            activeArcName = nameInput; // Set Name for Combat History
+            activeArcName = nameInput;
             
             if (editingArcIndex > -1) {
                 arcs[editingArcIndex].name = nameInput; arcs[editingArcIndex].exercises = selectedInMenu;
@@ -325,11 +329,10 @@
         
         function startSavedArc(index) { 
             const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]"); 
-            activeArcName = arcs[index].name; // Set Name for Combat History
+            activeArcName = arcs[index].name;
             startWorkout(arcs[index].exercises, 'arc'); 
         }
 
-        // --- NEW: VISUAL TIMELINE & ANALYTICS ---
         function openAnalytics() {
             const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
             document.getElementById('stat-workouts').textContent = chronicles.length;
@@ -388,6 +391,41 @@
                 const circle = item.querySelector('.selection-circle');
                 if (sIdx > -1) { circle.classList.add('active'); circle.textContent = sIdx + 1; } else { circle.classList.remove('active'); circle.textContent = ''; }
             });
+        }
+
+        // --- SWAP PROTOCOL LOGIC ---
+        function openSwapModal() {
+            const currEx = activeSession[currentIdx];
+            const alternatives = fullLibrary.filter(ex => ex.group === currEx.group && ex.en !== currEx.en);
+            const list = document.getElementById('swap-list');
+            
+            if(alternatives.length === 0) {
+                list.innerHTML = `<p class="text-center text-[10px] font-bold text-gray-400 uppercase mt-4">No alternative arts in library.</p>`;
+            } else {
+                list.innerHTML = alternatives.map(ex => `
+                    <div onclick="executeSwap('${ex.en}')" class="bento-card p-4 press-effect cursor-pointer flex justify-between items-center">
+                        <div><p class="font-bold text-gray-800 text-sm tracking-tight">${ex.en}</p><p class="text-[8px] text-gray-400 font-black uppercase tracking-widest mt-1">${ex.target}</p></div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-300">Select</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('ui-shield').classList.add('active');
+            document.getElementById('swap-modal').classList.add('show');
+        }
+
+        function closeSwapModal() {
+            document.getElementById('ui-shield').classList.remove('active');
+            document.getElementById('swap-modal').classList.remove('show');
+        }
+
+        function executeSwap(newExEn) {
+            const newEx = fullLibrary.find(ex => ex.en === newExEn);
+            if(newEx) {
+                saveShadowData(); // Save whatever they just did before swapping
+                activeSession[currentIdx] = newEx;
+                closeSwapModal();
+                resetForNewExercise(); // Reloads UI with the new exercise and its shadow
+            }
         }
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -459,7 +497,16 @@
             resetForNewExercise(); 
         }
 
-        function resetForNewExercise() { currentSet = 1; currentExerciseLog = []; shadowArray = JSON.parse(localStorage.getItem('zen-shadow-' + activeSession[currentIdx].en) || "[]"); document.getElementById('history-list').innerHTML = ''; document.getElementById('set-counter').textContent = `Form 1`; updateUI(); loadShadowForSet(); }
+        function resetForNewExercise() { 
+            currentSet = 1; 
+            currentExerciseLog = []; 
+            shadowArray = JSON.parse(localStorage.getItem('zen-shadow-' + activeSession[currentIdx].en) || "[]"); 
+            document.getElementById('history-list').innerHTML = ''; 
+            document.getElementById('set-counter').textContent = `Form 1`; 
+            updateUI(); 
+            loadShadowForSet(); 
+        }
+        
         function nextExercise() { saveShadowData(); if (currentIdx < activeSession.length - 1) { currentIdx++; resetForNewExercise(); } else { skipTimer(); concludeQuest(); } }
         function prevExercise() { saveShadowData(); if (currentIdx > 0) { currentIdx--; resetForNewExercise(); } }
 
@@ -467,7 +514,6 @@
             saveShadowData(); 
             const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
             const baseGroups = [...new Set(activeSession.map(ex => ex.group))].join(", ");
-            // HISTORY FIX: Use Arc Name if it exists, otherwise fallback to muscle groups
             const finalSummary = activeArcName ? `${activeArcName} — ${baseGroups}` : baseGroups;
             
             chronicles.unshift({ date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), summary: finalSummary, details: sessionLog });
@@ -481,7 +527,6 @@
         function cancelRetreat() { document.getElementById('ui-shield').classList.remove('active'); document.getElementById('retreat-modal').classList.remove('show'); }
         function confirmRetreat() { skipTimer(); cancelRetreat(); document.getElementById('workout-ui').classList.add('hidden'); updateFlavor(); resetPreparation(); }
         
-        // --- TIMERS ---
         function skipTimer() { clearInterval(timerInterval); document.getElementById('timer-bar').classList.remove('show'); document.getElementById('ui-shield').classList.remove('active'); }
         function startTimer(seconds) { 
             clearInterval(timerInterval); let time = seconds; updateTimerUI(seconds);
