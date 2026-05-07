@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Zen Gym - Training Arcs</title>
+    <title>Zen Gym - Modification</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -28,8 +28,10 @@
         
         #ui-shield { position: fixed; inset: 0; z-index: 9998; display: none; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         #ui-shield.active { display: block; }
-        #retreat-modal, #history-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: white; border-radius: 40px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; }
-        #retreat-modal.show, #history-modal.show { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        /* MODALS */
+        #retreat-modal, #history-modal, #purge-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: white; border-radius: 40px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; }
+        #retreat-modal.show, #history-modal.show, #purge-modal.show { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
         /* BUTTONS & CARDS */
         .zen-button { background: #1a1a1a; color: white; border-radius: 24px; padding: 20px; width: 100%; font-weight: 800; text-align: center; transition: 0.2s; cursor: pointer; display: block; letter-spacing: 0.1em; text-transform: uppercase; border: none; }
@@ -77,6 +79,14 @@
     <div id="ui-shield"></div>
 
     <div id="retreat-modal"><h2 class="text-2xl font-extrabold tracking-tighter mb-2 uppercase text-center text-gray-800">Abandon Quest?</h2><div onclick="cancelRetreat()" class="zen-button mb-4 press-effect mt-8">Stay the Path</div><div onclick="confirmRetreat()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 py-4 cursor-pointer text-center">Abandon</div></div>
+    
+    <div id="purge-modal">
+        <h2 class="text-2xl font-extrabold tracking-tighter mb-2 uppercase text-center text-gray-800">Purge Arc?</h2>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-10 text-center leading-relaxed">The System will permanently delete these coordinates.</p>
+        <div onclick="cancelPurge()" class="zen-button mb-4 press-effect">Cancel</div>
+        <div onclick="executePurge()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 py-4 cursor-pointer text-center">Purge</div>
+    </div>
+
     <div id="history-modal"><div class="flex justify-between items-center mb-6"><h2 class="text-xl font-extrabold tracking-tighter text-gray-800 uppercase">Quest Log</h2><div onclick="closeHistory()" class="pill cursor-pointer">Close</div></div><div id="history-detail-content" class="max-h-[300px] overflow-y-auto pr-2"></div></div>
 
     <div id="analytics-window" class="fixed inset-0 bg-[#fcfcfc] z-[60] p-6 hidden flex flex-col">
@@ -142,50 +152,28 @@
         </header>
         <div id="exercise-list" class="scroll-container mb-4"></div>
         <div class="shrink-0 pt-4 border-t border-gray-100">
-            <input type="text" id="arc-name-input" placeholder="Routine Name (e.g., GYM DÍA 1)" class="w-full text-center py-4 mb-4 border-b-2 border-gray-200 text-lg font-bold text-gray-800 uppercase tracking-widest focus:outline-none">
-            <div onclick="saveAndStartArc()" class="zen-button press-effect italic mb-3">Save & Invoke</div>
-            <div onclick="startSelectedOnly()" class="secondary-button press-effect text-[10px] text-gray-500">Quick Start (No Save)</div>
+            <input type="text" id="arc-name-input" placeholder="Routine Name" class="w-full text-center py-4 mb-4 border-b-2 border-gray-200 text-lg font-bold text-gray-800 uppercase tracking-widest focus:outline-none">
+            <div onclick="saveAndStartArc()" id="btn-save-arc" class="zen-button press-effect italic mb-3">Save & Invoke</div>
+            <div onclick="startSelectedOnly()" id="btn-quick-start" class="secondary-button press-effect text-[10px] text-gray-500">Quick Start (No Save)</div>
         </div>
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
-        <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0">
-            <div onclick="retreatClick()" class="pill cursor-pointer press-effect">Retreat</div>
-            <span id="progress-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Stage 1 / 4</span>
-            <div class="w-16"></div>
-        </div>
-
+        <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0"><div onclick="retreatClick()" class="pill cursor-pointer press-effect">Retreat</div><span id="progress-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Stage 1 / 4</span><div class="w-16"></div></div>
         <div class="flex-1 overflow-y-auto overflow-x-hidden px-2 pb-6">
-            <div class="aura-container">
-                <div id="spirit-aura" class="aura-glow"></div>
-                <img id="active-character" src="" class="w-full h-full object-contain relative z-10">
-                <span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">&nbsp;</span>
-            </div>
-
+            <div class="aura-container"><div id="spirit-aura" class="aura-glow"></div><img id="active-character" src="" class="w-full h-full object-contain relative z-10"><span id="target-muscle" class="absolute bottom-4 text-[9px] bg-white px-5 py-2 rounded-full text-black font-black border border-gray-200 uppercase tracking-widest z-20">&nbsp;</span></div>
             <div class="flex justify-between items-end mb-1"><h2 id="ex-name-en" class="text-2xl font-extrabold tracking-tighter text-gray-800">---</h2><span id="set-counter" class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Form 1</span></div>
+            <div class="flex items-center justify-between mb-8 px-1 w-full"><h3 id="ex-name-es" class="text-sm font-bold italic text-gray-400">---</h3><span id="history-label" class="text-[9px] font-black text-white uppercase bg-black px-2 py-1 rounded-full tracking-widest">PB: 0kg</span></div>
+            <div id="shadow-record-box" class="w-full flex justify-center mb-4"><span id="shadow-record-text" class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] bg-gray-100 px-4 py-2 rounded-full opacity-80">SHADOW: ---</span></div>
             
-            <div class="flex items-center justify-between mb-8 px-1 w-full">
-                <h3 id="ex-name-es" class="text-sm font-bold italic text-gray-400">---</h3>
-                <span id="history-label" class="text-[9px] font-black text-white uppercase bg-black px-2 py-1 rounded-full tracking-widest">PB: 0kg</span>
-            </div>
-
-            <div id="shadow-record-box" class="w-full flex justify-center mb-4">
-                <span id="shadow-record-text" class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] bg-gray-100 px-4 py-2 rounded-full opacity-80">SHADOW: ---</span>
-            </div>
-
             <div class="grid grid-cols-2 gap-8 mb-10 w-full">
                 <div class="text-center"><label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Weight</label><input type="number" inputmode="decimal" pattern="[0-9]*" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors"></div>
                 <div class="text-center"><label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Reps</label><input type="number" inputmode="decimal" pattern="[0-9]*" id="reps-input" placeholder="10" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors"></div>
             </div>
-
+            
             <div onclick="logSet()" class="zen-button mb-10 press-effect" role="button">Unleash</div>
-
-            <div id="set-history" class="mb-4 w-full">
-                <h4 class="text-[9px] font-black uppercase text-gray-400 tracking-[0.3em] mb-4 text-center">Record of Forms</h4>
-                <div id="history-list" class="w-full"></div>
-            </div>
+            <div id="set-history" class="mb-4 w-full"><h4 class="text-[9px] font-black uppercase text-gray-400 tracking-[0.3em] mb-4 text-center">Record of Forms</h4><div id="history-list" class="w-full"></div></div>
         </div>
-
         <div class="mt-auto pt-4 flex gap-4 w-full shrink-0 border-t border-gray-100 bg-white pb-2">
             <div id="back-btn" onclick="prevExercise()" style="visibility: hidden;" class="flex-1 py-5 rounded-[24px] bg-gray-100 font-bold text-gray-500 text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer">Back</div>
             <div id="next-btn" onclick="nextExercise()" class="flex-1 py-5 rounded-[24px] bg-[#1a1a1a] text-white font-bold text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer">Advance</div>
@@ -206,7 +194,6 @@
         };
         const AURA_COLORS = { 'Chest': '#ff4d4d', 'Back': '#9d4edd', 'Arms': '#0077ff', 'Legs': '#38b000', 'Shoulders': '#00f5d4', 'Core': '#ffbe0b', 'Default': '#1a1a1a' };
 
-        // LIBRARY UPDATED TO MATCH YOUR APPLE NOTES
         const fullLibrary = [
             { en: "Bench Press", es: "Press de Banca", group: "Chest", target: "Chest" },
             { en: "Incline DB Press", es: "Press Inclinado", group: "Chest", target: "Upper Chest" },
@@ -232,6 +219,9 @@
         let activeSession = [];
         let selectedInMenu = [];
         let selectedGroups = [];
+        let editingArcIndex = -1;
+        let arcToDeleteIndex = -1;
+        
         let sessionLog = [];
         let currentExerciseLog = []; 
         let shadowArray = []; 
@@ -246,13 +236,10 @@
             updateFlavor(); 
             const name = localStorage.getItem('zen-name');
             if (!name) { document.getElementById('onboarding').classList.remove('hidden'); } 
-            else { 
-                document.getElementById('display-name').textContent = name; 
-                updateLevelUI(); renderChronicles(); renderArcs();
-            }
+            else { document.getElementById('display-name').textContent = name; updateLevelUI(); renderChronicles(); renderArcs(); }
         };
 
-        // --- TRAINING ARCS LOGIC ---
+        // --- TRAINING ARCS: RENDER, EDIT, PURGE ---
         function renderArcs() {
             const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
             const list = document.getElementById('training-arcs-list');
@@ -263,20 +250,86 @@
             } else {
                 arcs.forEach((arc, i) => {
                     html += `
-                    <div class="bento-card p-6 press-effect flex justify-between items-center cursor-pointer" onclick="startSavedArc(${i})">
-                        <div>
-                            <h4 class="text-lg font-bold text-gray-800 tracking-tighter uppercase">${arc.name}</h4>
-                            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mt-1">${arc.exercises.length} Techniques</p>
+                    <div class="bento-card p-6 flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-800 tracking-tighter uppercase">${arc.name}</h4>
+                                <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mt-1">${arc.exercises.length} Techniques</p>
+                            </div>
+                            <div onclick="startSavedArc(${i})" class="pill bg-black text-white press-effect cursor-pointer text-center flex items-center justify-center">Start</div>
                         </div>
-                        <div class="text-[10px] font-black uppercase tracking-[0.3em] text-black italic">Start →</div>
+                        <div class="flex gap-2 border-t border-gray-100 pt-4">
+                            <div onclick="editArc(${i})" class="flex-1 text-center text-[9px] font-black uppercase tracking-widest text-gray-500 cursor-pointer press-effect py-2">Modify</div>
+                            <div onclick="confirmPurge(${i})" class="flex-1 text-center text-[9px] font-black uppercase tracking-widest text-red-400 cursor-pointer press-effect py-2">Erase</div>
+                        </div>
                     </div>`;
                 });
             }
             list.innerHTML = html;
         }
 
+        function confirmPurge(index) {
+            arcToDeleteIndex = index;
+            document.getElementById('ui-shield').classList.add('active');
+            document.getElementById('purge-modal').classList.add('show');
+        }
+
+        function cancelPurge() {
+            arcToDeleteIndex = -1;
+            document.getElementById('ui-shield').classList.remove('active');
+            document.getElementById('purge-modal').classList.remove('show');
+        }
+
+        function executePurge() {
+            if(arcToDeleteIndex > -1) {
+                const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
+                arcs.splice(arcToDeleteIndex, 1);
+                localStorage.setItem('zen-arcs', JSON.stringify(arcs));
+                renderArcs();
+            }
+            cancelPurge();
+        }
+
+        function editArc(index) {
+            const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
+            const arc = arcs[index];
+            editingArcIndex = index;
+            selectedInMenu = [...arc.exercises];
+            
+            document.getElementById('arc-name-input').value = arc.name;
+            document.getElementById('selection-title').textContent = "Modify Arc";
+            document.getElementById('btn-save-arc').textContent = "Update Arc";
+            document.getElementById('btn-quick-start').classList.add('hidden'); // Hide quick start during edit
+            
+            // Render ENTIRE library so they can add new stuff
+            const listDiv = document.getElementById('exercise-list');
+            listDiv.innerHTML = '';
+            fullLibrary.forEach(ex => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-6 mb-4 bento-card press-effect cursor-pointer";
+                item.onclick = () => toggleSelection(ex, item, fullLibrary);
+                item.innerHTML = `<div><p class="font-bold text-gray-800 text-sm tracking-tight">${ex.en}</p><p class="text-[8px] text-gray-400 font-black uppercase tracking-widest">${ex.group} • ${ex.target}</p></div><div class="selection-circle"></div>`;
+                listDiv.appendChild(item);
+            });
+            
+            // Re-apply active state to selected exercises
+            Array.from(listDiv.children).forEach((item, i) => {
+                const sIdx = selectedInMenu.findIndex(s => s.en === fullLibrary[i].en);
+                const circle = item.querySelector('.selection-circle');
+                if (sIdx > -1) { circle.classList.add('active'); circle.textContent = sIdx + 1; }
+            });
+
+            document.getElementById('selection-ui').classList.remove('hidden');
+        }
+
         function draftArc() {
+            editingArcIndex = -1;
             document.getElementById('synthesis-bar').classList.remove('show');
+            document.getElementById('arc-name-input').value = "";
+            document.getElementById('selection-title').textContent = "Builder";
+            document.getElementById('btn-save-arc').textContent = "Save & Invoke";
+            document.getElementById('btn-quick-start').classList.remove('hidden');
+
             const listDiv = document.getElementById('exercise-list');
             listDiv.innerHTML = ''; selectedInMenu = [];
             const filtered = fullLibrary.filter(ex => selectedGroups.includes(ex.group));
@@ -288,36 +341,41 @@
                 item.innerHTML = `<div><p class="font-bold text-gray-800 text-sm tracking-tight">${ex.en}</p><p class="text-[8px] text-gray-400 font-black uppercase tracking-widest">${ex.es}</p></div><div class="selection-circle"></div>`;
                 listDiv.appendChild(item);
             });
-            document.getElementById('selection-title').textContent = "Builder";
             document.getElementById('selection-ui').classList.remove('hidden');
         }
 
         function saveAndStartArc() {
             if (selectedInMenu.length === 0) return alert("Select at least one technique.");
             const nameInput = document.getElementById('arc-name-input').value.trim() || "Custom Routine";
-            
             const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
-            arcs.push({ id: Date.now(), name: nameInput, exercises: selectedInMenu });
-            localStorage.setItem('zen-arcs', JSON.stringify(arcs));
             
-            renderArcs(); closeSelectionUI(); resetPreparation();
-            startWorkout(selectedInMenu, 'arc');
-        }
-
-        function startSelectedOnly() {
-            if (selectedInMenu.length > 0) {
-                closeSelectionUI(); resetPreparation();
+            if (editingArcIndex > -1) {
+                // UPDATE EXISTING
+                arcs[editingArcIndex].name = nameInput;
+                arcs[editingArcIndex].exercises = selectedInMenu;
+                localStorage.setItem('zen-arcs', JSON.stringify(arcs));
+                renderArcs(); closeSelectionUI(); resetPreparation();
+                // When updating, we just save and go back home.
+                alert("Arc Updated.");
+            } else {
+                // SAVE NEW
+                arcs.push({ id: Date.now(), name: nameInput, exercises: selectedInMenu });
+                localStorage.setItem('zen-arcs', JSON.stringify(arcs));
+                renderArcs(); closeSelectionUI(); resetPreparation();
                 startWorkout(selectedInMenu, 'arc');
             }
         }
 
-        function startSavedArc(index) {
-            const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
-            const arc = arcs[index];
-            startWorkout(arc.exercises, 'arc');
+        function startSelectedOnly() {
+            if (selectedInMenu.length > 0) { closeSelectionUI(); resetPreparation(); startWorkout(selectedInMenu, 'arc'); }
         }
 
-        // --- CORE SYSTEM & UI ---
+        function startSavedArc(index) {
+            const arcs = JSON.parse(localStorage.getItem('zen-arcs') || "[]");
+            startWorkout(arcs[index].exercises, 'arc');
+        }
+
+        // --- CORE UI & SYSTEM ---
         function openAnalytics() {
             const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
             document.getElementById('stat-workouts').textContent = chronicles.length;
@@ -345,7 +403,8 @@
             document.getElementById('synthesis-bar').classList.toggle('show', selectedGroups.length > 0);
         }
 
-        function closeSelectionUI() { document.getElementById('selection-ui').classList.add('hidden'); if (selectedGroups.length > 0) document.getElementById('synthesis-bar').classList.add('show'); }
+        function closeSelectionUI() { document.getElementById('selection-ui').classList.add('hidden'); if (selectedGroups.length > 0) document.getElementById('synthesis-bar').classList.add('show'); editingArcIndex = -1; }
+        
         function toggleSelection(ex, element, options) {
             const idx = selectedInMenu.findIndex(s => s.en === ex.en);
             if (idx > -1) selectedInMenu.splice(idx, 1); else selectedInMenu.push(ex);
@@ -455,10 +514,7 @@
         function confirmRetreat() { skipTimer(); cancelRetreat(); document.getElementById('workout-ui').classList.add('hidden'); updateFlavor(); resetPreparation(); }
         function skipTimer() { clearInterval(timerInterval); document.getElementById('timer-bar').classList.remove('show'); document.getElementById('ui-shield').classList.remove('active'); }
         function startTimer(seconds) { clearInterval(timerInterval); let time = seconds; document.getElementById('timer-bar').classList.add('show'); document.getElementById('ui-shield').classList.add('active'); document.getElementById('timer-display').textContent = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').textContent = time; if(time <= 0) skipTimer(); }, 1000); }
-        function updateFlavor() { 
-            const h = new Date().getHours(); document.getElementById('time-greeting').textContent = `Timeline: ${h < 12 ? "Dawn" : h < 18 ? "Solar" : "Twilight"}`;
-            const quotes = ["Keep moving forward.", "Arise.", "The journey is what matters.", "I have no enemies..."]; document.getElementById('flavor-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)]; 
-        }
+        function updateFlavor() { const h = new Date().getHours(); document.getElementById('time-greeting').textContent = `Timeline: ${h < 12 ? "Dawn" : h < 18 ? "Solar" : "Twilight"}`; const quotes = ["Keep moving forward.", "Arise.", "The journey is what matters.", "I have no enemies..."]; document.getElementById('flavor-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)]; }
         
         function updateUI() {
             const ex = activeSession[currentIdx];
