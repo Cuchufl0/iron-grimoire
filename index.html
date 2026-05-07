@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#1a1a1a">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/1a1a1a/ffffff?text=Z">
     
-    <title>Zen Gym - V5.9.1</title>
+    <title>Zen Gym - Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -292,6 +292,10 @@
 
         window.onload = () => {
             updateFlavor(); 
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.has('reset')) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
             const name = localStorage.getItem('zen-name');
             if (!name) { 
                 document.getElementById('onboarding').classList.remove('hidden'); 
@@ -304,7 +308,6 @@
             }
         };
 
-        // --- AUTO-SAVE PROTOCOL ---
         function saveWorkoutState() {
             const state = { activeSession, currentIdx, currentSet, sessionLog, currentExerciseLog, activeArcName, currentSessionTonnage, currentSessionReps, currentSessionPRs, globalSeconds, isWarmup };
             localStorage.setItem('zen-active-workout', JSON.stringify(state));
@@ -321,7 +324,6 @@
                 
                 shadowArray = JSON.parse(localStorage.getItem('zen-shadow-' + activeSession[currentIdx].en) || "[]");
                 
-                // Rebuild History List
                 document.getElementById('history-list').innerHTML = '';
                 const currentExLogs = sessionLog.filter(l => l.exercise === activeSession[currentIdx].en);
                 currentExLogs.reverse().forEach(log => {
@@ -337,7 +339,6 @@
                     document.getElementById('history-list').appendChild(row);
                 });
 
-                // Resume Global Clock
                 clearInterval(globalTimerInterval);
                 globalTimerInterval = setInterval(() => { globalSeconds++; const mins = String(Math.floor(globalSeconds / 60)).padStart(2, '0'); const secs = String(globalSeconds % 60).padStart(2, '0'); document.getElementById('global-clock-display').textContent = `${mins}:${secs}`; }, 1000);
 
@@ -354,7 +355,6 @@
             }
         }
 
-        // --- WARM-UP LOGIC ---
         function toggleWarmup() {
             isWarmup = !isWarmup;
             const btn = document.getElementById('btn-warmup');
@@ -363,11 +363,9 @@
             saveWorkoutState();
         }
 
-        // --- GLOBAL CLOCK LOGIC ---
         function startGlobalClock() { globalSeconds = 0; clearInterval(globalTimerInterval); document.getElementById('global-clock-display').textContent = "00:00"; globalTimerInterval = setInterval(() => { globalSeconds++; const mins = String(Math.floor(globalSeconds / 60)).padStart(2, '0'); const secs = String(globalSeconds % 60).padStart(2, '0'); document.getElementById('global-clock-display').textContent = `${mins}:${secs}`; }, 1000); }
         function stopGlobalClock() { clearInterval(globalTimerInterval); const mins = String(Math.floor(globalSeconds / 60)).padStart(2, '0'); const secs = String(globalSeconds % 60).padStart(2, '0'); return `${mins}:${secs}`; }
 
-        // --- TIME-BASED EXERCISE LOGIC ---
         function toggleStopwatch() {
             const btn = document.getElementById('btn-stopwatch');
             if(isStopwatchRunning) { clearInterval(exStopwatchInterval); isStopwatchRunning = false; btn.textContent = "Start Timer"; btn.className = "flex-1 pill bg-gray-100 text-gray-800 press-effect text-center py-4 font-bold text-xs uppercase tracking-widest border border-gray-200"; document.getElementById('time-input').value = exStopwatchSeconds; } 
@@ -523,9 +521,7 @@
             activeSession = exercises; sessionLog = []; currentIdx = 0; currentSessionTonnage = 0; currentSessionReps = 0; currentSessionPRs = 0;
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('workout-ui').classList.remove('hidden'); 
-            startGlobalClock(); 
-            resetForNewExercise(); 
-            saveWorkoutState();
+            startGlobalClock(); resetForNewExercise(); saveWorkoutState();
         }
 
         function resetForNewExercise() { 
@@ -549,34 +545,17 @@
             chronicles.unshift({ date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), summary: finalSummary, details: sessionLog, time: totalTime });
             localStorage.setItem('zen-chronicles', JSON.stringify(chronicles)); 
             
-            // WIPE AUTO-SAVE
             localStorage.removeItem('zen-active-workout');
 
             document.getElementById('workout-ui').classList.add('hidden'); document.getElementById('summary-arc-name').textContent = finalSummary; document.getElementById('summary-volume').textContent = currentSessionTonnage + " KG"; document.getElementById('summary-reps').textContent = currentSessionReps; document.getElementById('summary-prs').textContent = currentSessionPRs; document.getElementById('summary-time').textContent = totalTime; document.getElementById('summary-ui').classList.remove('hidden');
         }
 
-        function closeSummary() { 
-            document.getElementById('summary-ui').classList.add('hidden'); 
-            document.getElementById('home-screen').classList.remove('hidden');
-            updateFlavor(); 
-            resetPreparation(); 
-            updateLevelUI(); 
-        }
+        function closeSummary() { document.getElementById('summary-ui').classList.add('hidden'); document.getElementById('home-screen').classList.remove('hidden'); updateFlavor(); resetPreparation(); updateLevelUI(); }
         function resetPreparation() { selectedGroups = []; Array.from(document.querySelectorAll('.arsenal-btn')).forEach(btn => { btn.className = "arsenal-btn bento-card p-8 text-center text-[9px] uppercase font-black"; }); document.getElementById('synthesis-bar').classList.remove('show'); activeArcName = ""; currentFilter = 'All'; document.getElementById('selected-order-list').innerHTML = ''; }
 
         function retreatClick() { document.getElementById('ui-shield').classList.add('active'); document.getElementById('retreat-modal').classList.add('show'); }
         function cancelRetreat() { document.getElementById('ui-shield').classList.remove('active'); document.getElementById('retreat-modal').classList.remove('show'); }
-        function confirmRetreat() { 
-            stopGlobalClock(); 
-            skipTimer(); 
-            cancelRetreat(); 
-            localStorage.removeItem('zen-active-workout'); // WIPE AUTO-SAVE
-            document.getElementById('workout-ui').classList.add('hidden'); 
-            document.getElementById('home-screen').classList.remove('hidden');
-            updateFlavor(); 
-            resetPreparation(); 
-            updateLevelUI(); 
-        }
+        function confirmRetreat() { stopGlobalClock(); skipTimer(); cancelRetreat(); localStorage.removeItem('zen-active-workout'); document.getElementById('workout-ui').classList.add('hidden'); document.getElementById('home-screen').classList.remove('hidden'); updateFlavor(); resetPreparation(); updateLevelUI(); }
         
         function skipTimer() { clearInterval(timerInterval); document.getElementById('timer-bar').classList.remove('show'); document.getElementById('ui-shield').classList.remove('active'); }
         function startTimer(seconds) { clearInterval(timerInterval); let time = seconds; updateTimerUI(seconds); document.getElementById('timer-bar').classList.add('show'); document.getElementById('ui-shield').classList.add('active'); document.getElementById('timer-display').textContent = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').textContent = time; if(time <= 0) skipTimer(); }, 1000); }
@@ -594,24 +573,8 @@
             document.getElementById('next-btn').textContent = currentIdx === activeSession.length - 1 ? 'Conclude' : 'Advance';
         }
         
-        function saveName() { 
-            const n = document.getElementById('user-name-input').value; 
-            if(n) { 
-                localStorage.setItem('zen-name', n); 
-                document.getElementById('onboarding').classList.add('hidden'); 
-                document.getElementById('display-name').textContent = n; 
-                document.getElementById('home-screen').classList.remove('hidden');
-                updateLevelUI(); 
-                renderArcs(); 
-            } 
-        }
-        
-        function resetApp() { 
-            if(confirm("Abandon legacy? This is permanent.")) { 
-                localStorage.clear(); 
-                window.location.href = window.location.pathname + '?reset=' + new Date().getTime();
-            } 
-        }
+        function saveName() { const n = document.getElementById('user-name-input').value; if(n) { localStorage.setItem('zen-name', n); document.getElementById('onboarding').classList.add('hidden'); document.getElementById('display-name').textContent = n; document.getElementById('home-screen').classList.remove('hidden'); updateLevelUI(); renderArcs(); } }
+        function resetApp() { if(confirm("Abandon legacy? This is permanent.")) { localStorage.clear(); window.location.href = window.location.pathname + '?reset=' + new Date().getTime(); } }
 
         document.addEventListener('touchstart', (e) => { const el = e.target.closest('.press-effect'); if (el) el.classList.add('is-pressed'); }, {passive: true});
         document.addEventListener('touchend', (e) => { const el = e.target.closest('.press-effect'); if (el) el.classList.remove('is-pressed'); }, {passive: true});
