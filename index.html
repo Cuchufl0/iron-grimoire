@@ -49,8 +49,8 @@
         #synthesis-bar.show { transform: translateY(0); }
 
         /* WORKOUT ELEMENTS */
-        .xp-container { width: 100%; height: 2px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .xp-bar { height: 100%; background: #1a1a1a; width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .xp-container { width: 100%; height: 8px; background: #e5e5e5; border-radius: 8px; margin-top: 10px; overflow: hidden; }
+        .xp-bar { height: 100%; background: #1a1a1a; width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 8px; }
         .aura-container { width: 100%; height: 192px; border-radius: 40px; position: relative; background: #f9f9f9; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 32px; border: 1px solid #f0f0f0; }
         .aura-glow { position: absolute; width: 120px; height: 120px; border-radius: 50%; filter: blur(45px); opacity: 0.4; animation: auraPulse 3s infinite ease-in-out; pointer-events: none; transition: background-color 0.8s ease; }
         @keyframes auraPulse { 0%, 100% { transform: scale(1.2); opacity: 0.3; } 50% { transform: scale(1.8); opacity: 0.6; } }
@@ -64,6 +64,11 @@
         
         #timer-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 280px; background: #1a1a1a; color: white; padding: 40px; transform: translateY(100%); transition: 0.6s; z-index: 9999; border-radius: 44px 44px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         #timer-bar.show { transform: translateY(0); }
+        
+        /* Remove default stepper arrows for number inputs across browsers */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
 <body class="p-6">
@@ -107,11 +112,9 @@
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mt-2">Total Sets</p>
                 </div>
             </div>
-            
             <div class="px-2">
                 <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em]">Personal Records</h3>
-                <div id="pb-list" class="bento-card overflow-hidden">
-                    </div>
+                <div id="pb-list" class="bento-card overflow-hidden"></div>
             </div>
         </div>
     </div>
@@ -136,14 +139,13 @@
 
     <div id="home-screen" class="flex flex-col h-full">
         <header class="mb-10 pt-8 flex justify-between items-start px-2 shrink-0">
-            <div><h1 class="text-[9px] tracking-[0.4em] uppercase text-gray-400 mb-2 font-black" id="time-greeting">Timeline: Active</h1><h2 class="text-4xl font-bold tracking-tighter text-gray-800 italic">Warrior, <span id="display-name" class="text-gray-300">Zen</span>.</h2></div>
+            <div><h1 class="text-[9px] tracking-[0.4em] uppercase text-gray-400 mb-2 font-black" id="time-greeting">Timeline: Dawn</h1><h2 class="text-4xl font-bold tracking-tighter text-gray-800 italic">Warrior, <span id="display-name" class="text-gray-300">Zen</span>.</h2></div>
             <div onclick="resetApp()" class="pill cursor-pointer text-gray-400">Reset</div>
         </header>
 
         <div class="px-2 mb-8 shrink-0">
             <div class="bento-card p-6 relative">
                 <div onclick="openAnalytics()" class="absolute top-6 right-6 pill bg-gray-100 text-gray-600 press-effect">Analytics</div>
-                
                 <div class="flex flex-col mb-1 pr-20">
                     <h2 id="user-rank-title" class="text-xl font-extrabold tracking-tighter text-gray-800">Seeker</h2>
                     <span id="user-level" class="text-xs font-black uppercase text-gray-400 mt-1">Level 1</span>
@@ -154,7 +156,6 @@
         </div>
 
         <div class="scroll-container pb-32">
-            
             <div class="press-effect bento-card p-8 mb-10 border-gray-200 cursor-pointer" onclick="startWorkout(fullRoutine, 'home')">
                 <span class="pill bg-black text-white mb-6 inline-block">The Main Quest</span>
                 <h3 class="text-2xl font-bold mb-1 text-gray-800 tracking-tighter uppercase">Path of the Warrior</h3>
@@ -175,7 +176,6 @@
                 <h3 class="text-[9px] font-black mb-4 text-gray-800 uppercase tracking-[0.4em] text-center">Recent Chronicles</h3>
                 <div id="chronicles-list" class="bento-card overflow-hidden"></div>
             </div>
-
         </div>
     </div>
 
@@ -214,8 +214,14 @@
             </div>
 
             <div class="grid grid-cols-2 gap-8 mb-10 w-full">
-                <div class="text-center"><label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Weight</label><input type="number" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors"></div>
-                <div class="text-center"><label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Reps</label><input type="number" id="reps-input" placeholder="10" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors"></div>
+                <div class="text-center">
+                    <label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Weight</label>
+                    <input type="number" inputmode="decimal" pattern="[0-9]*" id="weight-input" placeholder="0" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors">
+                </div>
+                <div class="text-center">
+                    <label class="text-[10px] uppercase text-gray-400 font-black mb-3 block tracking-[0.2em]">Reps</label>
+                    <input type="number" inputmode="decimal" pattern="[0-9]*" id="reps-input" placeholder="10" class="w-full border-b-2 border-gray-100 py-2 text-4xl font-light text-gray-800 focus:border-gray-800 transition-colors">
+                </div>
             </div>
 
             <div onclick="logSet()" class="zen-button mb-10 press-effect" role="button">Unleash</div>
@@ -287,26 +293,25 @@
         let totalXp = parseInt(localStorage.getItem('zen-total-xp')) || 0;
 
         window.onload = () => {
+            updateFlavor(); // TIMELINE FIX: Now runs immediately on load
             const name = localStorage.getItem('zen-name');
-            if (!name) document.getElementById('onboarding').classList.remove('hidden');
-            else { 
-                document.getElementById('display-name').innerText = name; 
-                updateLevelUI(); updateFlavor(); renderChronicles(); 
+            if (!name) {
+                document.getElementById('onboarding').classList.remove('hidden');
+            } else { 
+                document.getElementById('display-name').textContent = name; 
+                updateLevelUI(); 
+                renderChronicles(); 
             }
         };
 
-        // ANALYTICS DASHBOARD LOGIC
         function openAnalytics() {
-            // 1. Calculate Lifetime Workouts
             const chronicles = JSON.parse(localStorage.getItem('zen-chronicles') || "[]");
-            document.getElementById('stat-workouts').innerText = chronicles.length;
+            document.getElementById('stat-workouts').textContent = chronicles.length;
 
-            // 2. Calculate Lifetime Sets
             let totalSets = 0;
             chronicles.forEach(c => { totalSets += (c.details ? c.details.length : 0); });
-            document.getElementById('stat-sets').innerText = totalSets;
+            document.getElementById('stat-sets').textContent = totalSets;
 
-            // 3. Render PB List
             const pbList = document.getElementById('pb-list');
             let pbHTML = '';
             let hasPBs = false;
@@ -325,16 +330,12 @@
                 }
             }
             
-            if(!hasPBs) {
-                pbHTML = `<div class="p-8 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">No records established.<br>Enter the arena.</div>`;
-            }
+            if(!hasPBs) { pbHTML = `<div class="p-8 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">No records established.<br>Enter the arena.</div>`; }
             pbList.innerHTML = pbHTML;
             document.getElementById('analytics-window').classList.remove('hidden');
         }
 
-        function closeAnalytics() {
-            document.getElementById('analytics-window').classList.add('hidden');
-        }
+        function closeAnalytics() { document.getElementById('analytics-window').classList.add('hidden'); }
 
         function toggleArsenal(group) {
             const idx = selectedGroups.indexOf(group);
@@ -357,7 +358,7 @@
                 item.innerHTML = `<div><p class="font-bold text-gray-800 text-sm tracking-tight">${ex.en}</p><p class="text-[8px] text-gray-400 font-black uppercase tracking-widest">${ex.group} • ${ex.target}</p></div><div class="selection-circle"></div>`;
                 listDiv.appendChild(item);
             });
-            document.getElementById('selection-title').innerText = selectedGroups.length > 1 ? "Synthesis" : selectedGroups[0];
+            document.getElementById('selection-title').textContent = selectedGroups.length > 1 ? "Synthesis" : selectedGroups[0];
             document.getElementById('selection-ui').classList.remove('hidden');
         }
 
@@ -368,7 +369,7 @@
             Array.from(document.getElementById('exercise-list').children).forEach((item, i) => {
                 const sIdx = selectedInMenu.findIndex(s => s.en === options[i].en);
                 const circle = item.querySelector('.selection-circle');
-                if (sIdx > -1) { circle.classList.add('active'); circle.innerText = sIdx + 1; } else { circle.classList.remove('active'); circle.innerText = ''; }
+                if (sIdx > -1) { circle.classList.add('active'); circle.textContent = sIdx + 1; } else { circle.classList.remove('active'); circle.textContent = ''; }
             });
         }
         function startSelected() { if (selectedInMenu.length > 0) { document.getElementById('selection-ui').classList.add('hidden'); document.getElementById('synthesis-bar').classList.remove('show'); startWorkout(selectedInMenu, 'selection'); } }
@@ -384,9 +385,9 @@
         function getXpRequired(lvl) { return SYSTEM_CONFIG.baseXp + (lvl * SYSTEM_CONFIG.xpScaling); }
         function updateLevelUI() {
             const r = level >= 50 ? 'S' : level >= 40 ? 'A' : level >= 30 ? 'B' : level >= 20 ? 'C' : level >= 10 ? 'D' : 'E';
-            document.getElementById('user-rank-title').innerText = RANKS[r].title;
-            document.getElementById('user-rank-sub').innerText = RANKS[r].sub;
-            document.getElementById('user-level').innerText = `Level ${level}`;
+            document.getElementById('user-rank-title').textContent = RANKS[r].title;
+            document.getElementById('user-rank-sub').textContent = RANKS[r].sub;
+            document.getElementById('user-level').textContent = `Level ${level}`;
             let xpInLevels = 0; for(let i=1; i<level; i++) xpInLevels += getXpRequired(i);
             const currentLevelXp = totalXp - xpInLevels;
             const threshold = getXpRequired(level);
@@ -408,8 +409,8 @@
         async function triggerCinematic(type, val) {
             const overlay = document.getElementById('system-overlay'); const l1 = overlay.children[0]; const l2 = overlay.children[1]; const l3 = overlay.children[2];
             overlay.classList.add('active'); playSystemSound('levelup');
-            if (type === 'level') { l1.innerText = "You continued."; l2.innerText = "You endured."; l3.innerText = `Level Up — Level ${val}`; }
-            else { l1.innerText = "You have surpassed your limits."; l2.innerText = `Rank ${val} Achieved`; l3.innerText = RANKS[val].title; }
+            if (type === 'level') { l1.textContent = "You continued."; l2.textContent = "You endured."; l3.textContent = `Level Up — Level ${val}`; }
+            else { l1.textContent = "You have surpassed your limits."; l2.textContent = `Rank ${val} Achieved`; l3.textContent = RANKS[val].title; }
             await new Promise(r => setTimeout(r, 200)); l1.classList.add('visible');
             await new Promise(r => setTimeout(r, 800)); l2.classList.add('visible');
             await new Promise(r => setTimeout(r, 800)); l3.classList.add('visible');
@@ -419,7 +420,7 @@
 
         function triggerLimitBreak(weight) {
             const overlay = document.getElementById('limit-break-overlay');
-            document.getElementById('lb-record').innerText = weight + " KG";
+            document.getElementById('lb-record').textContent = weight + " KG";
             overlay.classList.add('active');
             setTimeout(() => { overlay.classList.remove('active'); }, 2500);
         }
@@ -448,7 +449,7 @@
             
             awardXP(SYSTEM_CONFIG.xpPerSet);
             currentSet++;
-            document.getElementById('set-counter').innerText = `Form ${currentSet}`;
+            document.getElementById('set-counter').textContent = `Form ${currentSet}`;
             
             loadShadowForSet();
             startTimer(60);
@@ -468,12 +469,12 @@
             const shadowSet = shadowArray[currentSet - 1];
             
             if (shadowSet) {
-                shadowText.innerText = `SHADOW: ${shadowSet.w}KG x ${shadowSet.r}`;
+                shadowText.textContent = `SHADOW: ${shadowSet.w}KG x ${shadowSet.r}`;
                 shadowText.style.opacity = '1';
                 wInput.value = shadowSet.w;
                 rInput.value = shadowSet.r;
             } else {
-                shadowText.innerText = "SHADOW: NONE";
+                shadowText.textContent = "SHADOW: NONE";
                 shadowText.style.opacity = '0.3';
                 if (currentExerciseLog.length > 0) {
                     wInput.value = currentExerciseLog[currentExerciseLog.length - 1].w;
@@ -497,7 +498,7 @@
             const exName = activeSession[currentIdx].en;
             shadowArray = JSON.parse(localStorage.getItem('zen-shadow-' + exName) || "[]");
             document.getElementById('history-list').innerHTML = ''; 
-            document.getElementById('set-counter').innerText = `Form 1`;
+            document.getElementById('set-counter').textContent = `Form 1`;
             updateUI(); loadShadowForSet();
         }
 
@@ -528,7 +529,15 @@
             const list = document.getElementById('chronicles-list');
             if (chronicles.length > 0) {
                 document.getElementById('chronicles-section').classList.remove('hidden');
-                list.innerHTML = chronicles.map((c, i) => `<div onclick="openHistory(${i})" class="chronicle-card press-effect cursor-pointer"><div class="flex-1 pr-4 truncate"><p class="text-xs font-bold text-gray-800 uppercase tracking-tight truncate w-full">${c.summary}</p><p class="text-[8px] font-black text-gray-400 uppercase mt-1">View Log →</p></div><span class="text-[9px] font-black text-gray-300 uppercase shrink-0">${c.date}</span></div>`).join('');
+                list.innerHTML = chronicles.map((c, i) => `
+                    <div onclick="openHistory(${i})" class="chronicle-card press-effect cursor-pointer">
+                        <div class="flex-1 pr-4 truncate">
+                            <p class="text-xs font-bold text-gray-800 uppercase tracking-tight truncate w-full">${c.summary}</p>
+                            <p class="text-[8px] font-black text-gray-400 uppercase mt-1">View Log →</p>
+                        </div>
+                        <span class="text-[9px] font-black text-gray-300 uppercase shrink-0">${c.date}</span>
+                    </div>
+                `).join('');
             }
         }
 
@@ -543,8 +552,19 @@
         function cancelRetreat() { document.getElementById('ui-shield').classList.remove('active'); document.getElementById('retreat-modal').classList.remove('show'); }
         function confirmRetreat() { skipTimer(); cancelRetreat(); document.getElementById('workout-ui').classList.add('hidden'); updateFlavor(); resetPreparation(); }
         function skipTimer() { clearInterval(timerInterval); document.getElementById('timer-bar').classList.remove('show'); document.getElementById('ui-shield').classList.remove('active'); }
-        function startTimer(seconds) { clearInterval(timerInterval); let time = seconds; document.getElementById('timer-bar').classList.add('show'); document.getElementById('ui-shield').classList.add('active'); document.getElementById('timer-display').innerText = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').innerText = time; if(time <= 0) skipTimer(); }, 1000); }
-        function updateFlavor() { const quotes = ["Keep moving forward.", "No matter how many times you’re knocked down, get back up.", "Arise.", "The journey is what matters.", "I have no enemies..."]; document.getElementById('flavor-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)]; }
+        function startTimer(seconds) { clearInterval(timerInterval); let time = seconds; document.getElementById('timer-bar').classList.add('show'); document.getElementById('ui-shield').classList.add('active'); document.getElementById('timer-display').textContent = time; timerInterval = setInterval(() => { time--; document.getElementById('timer-display').textContent = time; if(time <= 0) skipTimer(); }, 1000); }
+        
+        function updateFlavor() { 
+            const h = new Date().getHours();
+            let timeText = "Active";
+            if(h < 12) timeText = "Dawn";
+            else if(h < 18) timeText = "Solar";
+            else timeText = "Twilight";
+            document.getElementById('time-greeting').textContent = `Timeline: ${timeText}`;
+
+            const quotes = ["Keep moving forward.", "No matter how many times you’re knocked down, get back up.", "Arise.", "The journey is what matters.", "I have no enemies..."]; 
+            document.getElementById('flavor-quote').textContent = quotes[Math.floor(Math.random() * quotes.length)]; 
+        }
         
         function updateUI() {
             const ex = activeSession[currentIdx];
