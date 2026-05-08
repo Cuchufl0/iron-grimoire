@@ -1,8 +1,8 @@
 {
   "name": "Iron Grimoire",
   "short_name": "Grimoire",
-  "start_url": "/iron-grimoire/",
-  "scope": "/iron-grimoire/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#F2EBDC",
   "theme_color": "#F2EBDC",
