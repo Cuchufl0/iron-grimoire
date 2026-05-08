@@ -9,6 +9,9 @@
     <meta name="apple-mobile-web-app-title" content="Iron Grimoire">
     <meta name="theme-color" content="#F2EBDC">
     
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <title>Iron Grimoire</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -35,7 +38,6 @@
             overflow: hidden;
         }
 
-        /* Grainy Parchment Effect */
         body::before {
             content: "";
             position: fixed;
@@ -202,7 +204,7 @@
                 <span id="global-clock" class="text-xs font-black tracking-widest">00:00</span>
                 <span class="text-[7px] uppercase opacity-40 font-black">Time Elapsed</span>
             </div>
-            <div onclick="openAnalytics()" class="pill">Chronicles</div>
+            <div onclick="openProfile()" class="pill">Status</div>
         </header>
 
         <div class="flex-1 overflow-y-auto px-2">
@@ -326,6 +328,13 @@
         let timerInterval, globalSeconds = 0, globalInterval;
         let barWeightIdx = 0; const BAR_WEIGHTS = [20, 15, 10, 0];
 
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Registration failed: ', err));
+            });
+        }
+
         window.onload = () => {
             legacyMigration();
             loadState();
@@ -442,22 +451,15 @@
             document.getElementById('trial-counter').textContent = `Trial 1`;
             document.getElementById('trial-history').innerHTML = '';
             document.getElementById('progress-text').textContent = `${currentIdx + 1} / ${activeExpedition.length}`;
-            
-            // Image Setup
             const img = document.getElementById('active-character');
             img.src = `${art.group.toLowerCase()}.png`;
             document.getElementById('target-muscle').textContent = art.target.toUpperCase();
-            
-            // PB Setup
             const pb = localStorage.getItem(`grimoire-pb-${art.en}`) || 0;
             document.getElementById('history-label').textContent = pb > 0 ? `BEST: ${pb}KG` : "NEW ART";
-            
-            // Echo Setup
             const echo = JSON.parse(localStorage.getItem(`grimoire-echo-${art.en}`) || "[]");
             const setEcho = echo[currentTrial - 1];
             document.getElementById('echo-text').textContent = setEcho ? `ECHO: ${setEcho.w}KG x ${setEcho.r}` : "ECHO: NONE";
             if(setEcho) { document.getElementById('weight-input').value = setEcho.w; document.getElementById('reps-input').value = setEcho.r; }
-            
             calculatePlates();
         }
 
@@ -465,20 +467,13 @@
             const art = activeExpedition[currentIdx];
             const w = parseFloat(document.getElementById('weight-input').value) || 0;
             const r = parseInt(document.getElementById('reps-input').value) || 0;
-            
             sessionLog.push({ art: art.en, w, r, trial: currentTrial });
-            
             const pb = parseFloat(localStorage.getItem(`grimoire-pb-${art.en}`)) || 0;
-            if(w > pb) {
-                localStorage.setItem(`grimoire-pb-${art.en}`, w);
-                document.getElementById('history-label').textContent = `BEST: ${w}KG`;
-            }
-
+            if(w > pb) { localStorage.setItem(`grimoire-pb-${art.en}`, w); document.getElementById('history-label').textContent = `BEST: ${w}KG`; }
             const row = document.createElement('div');
             row.className = "flex justify-between items-center opacity-60 border-b border-black/5 pb-2";
             row.innerHTML = `<span class="text-[9px] font-black uppercase">Trial ${currentTrial}</span><span class="font-bold">${w}kg x ${r}</span>`;
             document.getElementById('trial-history').prepend(row);
-            
             awardXp(SYSTEM_CONFIG.xpPerSet);
             currentTrial++;
             document.getElementById('trial-counter').textContent = `Trial ${currentTrial}`;
@@ -506,17 +501,10 @@
         }
 
         function nextArt() {
-            // Save Echo
             const currentExLogs = sessionLog.filter(l => l.art === activeExpedition[currentIdx].en);
             const echoData = currentExLogs.map(l => ({ w: l.w, r: l.r }));
             localStorage.setItem(`grimoire-echo-${activeExpedition[currentIdx].en}`, JSON.stringify(echoData));
-
-            if(currentIdx < activeExpedition.length - 1) {
-                currentIdx++;
-                resetTrial();
-            } else {
-                concludeExpedition();
-            }
+            if(currentIdx < activeExpedition.length - 1) { currentIdx++; resetTrial(); } else { concludeExpedition(); }
         }
 
         function concludeExpedition() {
@@ -543,11 +531,7 @@
             document.getElementById('timer-bar').classList.add('show');
             document.getElementById('ui-shield').classList.remove('hidden');
             document.getElementById('timer-display').textContent = t;
-            timerInterval = setInterval(() => {
-                t--;
-                document.getElementById('timer-display').textContent = t;
-                if(t<=0) skipTimer();
-            }, 1000);
+            timerInterval = setInterval(() => { t--; document.getElementById('timer-display').textContent = t; if(t<=0) skipTimer(); }, 1000);
         }
 
         function skipTimer() {
@@ -563,13 +547,11 @@
             document.getElementById('profile-sub').textContent = RANKS[r].sub;
             document.getElementById('profile-level-txt').textContent = `Level ${level}`;
             document.getElementById('profile-window').classList.remove('hidden');
-            
             const ch = JSON.parse(localStorage.getItem('grimoire-chronicles') || "[]");
             document.getElementById('stat-quests').textContent = ch.length;
-            
             let vol = 0; ch.forEach(c => c.arts.forEach(a => vol += (a.w * a.r)));
             document.getElementById('stat-volume').textContent = vol > 1000 ? (vol/1000).toFixed(1) + 'k' : vol;
-            updateLevelUI(); // Sync bars
+            updateLevelUI();
         }
         
         function closeProfile() { document.getElementById('profile-window').classList.add('hidden'); }
