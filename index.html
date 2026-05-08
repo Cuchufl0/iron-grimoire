@@ -63,23 +63,23 @@
         #ui-shield { position: fixed; inset: 0; z-index: 9998; display: none; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
         #ui-shield.active { display: block; }
 
-        #retreat-modal, #purge-modal, #swap-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: var(--parchment); border: 2px solid var(--iron); border-radius: 24px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; flex-direction: column; }
-        #retreat-modal.show, #purge-modal.show, #swap-modal.show { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        #retreat-modal, #swap-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: var(--parchment); border: 2px solid var(--iron); border-radius: 24px; padding: 32px; z-index: 10000; display: none; opacity: 0; transition: 0.3s; flex-direction: column; }
+        #retreat-modal.show, #swap-modal.show { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        .order-badge { position: absolute; top: 12px; right: 12px; background: var(--oxblood); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
+        .quest-card { min-width: 240px; background: var(--ink); color: var(--parchment); border-radius: 20px; padding: 16px; scroll-snap-align: start; }
     </style>
 </head>
 <body class="p-6">
 
     <div id="limit-break-overlay"><h1 class="text-4xl font-[900] tracking-tighter uppercase italic mb-2 font-serif">Mortal Limit Broken</h1><p class="text-[10px] font-black uppercase tracking-[0.4em] opacity-50">New Peak Reached</p><p id="lb-record" class="text-3xl font-bold mt-6 font-serif">---</p></div>
-    
     <div id="system-overlay"><p class="text-[10px] uppercase tracking-[0.4em] opacity-60 mb-4">The Grimoire Updates</p><h1 id="sys-title" class="text-4xl font-bold italic mb-2 font-serif">---</h1><p id="sys-subtitle" class="text-sm italic opacity-80">---</p></div>
-    
     <div id="ui-shield"></div>
 
     <div id="retreat-modal"><h2 class="text-2xl font-bold tracking-tighter mb-2 uppercase text-center font-serif">Abandon Expedition?</h2><div onclick="cancelRetreat()" class="btn-primary mb-4 press-effect mt-8">Endure</div><div onclick="confirmRetreat()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-800 py-4 cursor-pointer text-center">Flee</div></div>
-    
     <div id="swap-modal"><div class="flex justify-between items-center mb-6 shrink-0"><h2 class="text-xl font-bold tracking-tighter uppercase font-serif">Swap Art</h2><div onclick="closeSwapModal()" class="pill cursor-pointer">Close</div></div><div id="swap-list" class="overflow-y-auto flex-1 pr-2 space-y-3 max-h-64"></div></div>
 
-    <div id="summary-ui" class="fixed inset-0 bg-var(--iron) bg-[#2B2B2B] z-[150] p-6 hidden flex flex-col items-center justify-center text-[#F2EBDC]">
+    <div id="summary-ui" class="fixed inset-0 bg-[#2B2B2B] z-[150] p-6 hidden flex flex-col items-center justify-center text-[#F2EBDC]">
         <h1 class="text-5xl font-bold tracking-tighter uppercase italic mb-2 text-center font-serif">Expedition Cleared</h1>
         <p class="text-[10px] font-black uppercase tracking-[0.4em] opacity-50 mb-12 text-center" id="summary-arc-name">---</p>
         <div class="w-full max-w-sm flex flex-col gap-4 mb-12">
@@ -106,29 +106,13 @@
                 <h2 class="text-4xl font-bold tracking-tighter italic font-serif">Warrior, <span id="display-name" class="opacity-30">---</span></h2>
             </div>
         </header>
-
-        <div class="px-2 mb-8">
-            <div class="grimoire-card p-6 relative overflow-hidden" onclick="openProfile()">
-                <div class="flex justify-between items-end mb-2">
-                    <div class="flex items-center gap-3">
-                        <div id="home-rank-letter" class="rank-seal">E</div>
-                        <div>
-                            <h2 id="user-rank-title" class="text-xl font-bold tracking-tighter font-serif">The Seeker</h2>
-                            <p id="user-level" class="text-[10px] font-black uppercase opacity-40 mt-1">Level 1 <span class="ml-1">▶</span></p>
-                        </div>
-                    </div>
-                    <span id="xp-text" class="text-[9px] font-black opacity-40 uppercase tracking-widest">0 / 120 XP</span>
-                </div>
-                <div class="xp-container mt-4"><div id="xp-bar-fill" class="xp-bar"></div></div>
-            </div>
-        </div>
-
+        <div class="px-2 mb-8"><div class="grimoire-card p-6 relative overflow-hidden press-effect cursor-pointer" onclick="openProfile()"><div class="flex justify-between items-end mb-2"><div class="flex items-center gap-3"><div id="home-rank-letter" class="rank-seal">E</div><div><h2 id="user-rank-title" class="text-xl font-bold tracking-tighter font-serif">The Seeker</h2><p id="user-level" class="text-[10px] font-black uppercase opacity-40 mt-1">Level 1 <span class="ml-1">▶</span></p></div></div><span id="xp-text" class="text-[9px] font-black opacity-40 uppercase tracking-widest">0 / 120 XP</span></div><div class="xp-container mt-4"><div id="xp-bar-fill" class="xp-bar"></div></div></div></div>
+        
         <div class="scroll-container">
             <div class="mb-10 px-2">
                 <h3 class="text-[9px] font-black mb-4 opacity-60 uppercase tracking-[0.4em]">Active Expeditions</h3>
                 <div id="expedition-list" class="grid grid-cols-1 gap-4"></div>
             </div>
-
             <h3 class="text-[9px] font-black mb-6 opacity-60 uppercase tracking-[0.4em] px-2 text-center">Draft New Art</h3>
             <div class="grid grid-cols-2 gap-4 px-2">
                 <div onclick="toggleArsenal('Chest')" id="btn-Chest" class="grimoire-card p-8 text-center text-[10px] uppercase font-black opacity-60 border-2 border-transparent">Chest</div>
@@ -139,10 +123,7 @@
                 <div onclick="toggleArsenal('Core')" id="btn-Core" class="grimoire-card p-8 text-center text-[10px] uppercase font-black opacity-60 border-2 border-transparent">Core</div>
             </div>
         </div>
-
-        <div id="synthesis-bar" class="fixed bottom-10 left-6 right-6 translate-y-[200%] transition-transform duration-500">
-            <div onclick="openBuilder()" class="btn-primary shadow-2xl">Prepare Expedition</div>
-        </div>
+        <div id="synthesis-bar" class="fixed bottom-10 left-6 right-6 translate-y-[200%] transition-transform duration-500"><div onclick="openBuilder()" class="btn-primary shadow-2xl">Prepare Expedition</div></div>
     </div>
 
     <div id="selection-ui" class="fixed inset-0 bg-[#F2EBDC] z-[60] p-6 hidden flex flex-col">
@@ -150,6 +131,12 @@
             <h2 class="text-3xl font-bold tracking-tighter uppercase italic font-serif">The Builder</h2>
             <div onclick="closeBuilder()" class="pill">Close</div>
         </header>
+
+        <div class="mb-6">
+            <h3 class="text-[9px] font-black mb-3 opacity-60 uppercase tracking-[0.4em] px-2">The Quest Board</h3>
+            <div class="horizontal-scroll px-2 pb-2" id="quest-board-container">
+                </div>
+        </div>
         
         <div class="horizontal-scroll mb-4 px-2 shrink-0 pb-2 border-b border-black/5" id="equipment-filters">
             <div onclick="setFilter('All')" id="flt-All" class="pill bg-[#333333] text-[#F2EBDC] shrink-0">All</div>
@@ -160,77 +147,40 @@
             <div onclick="setFilter('cable')" id="flt-cable" class="pill shrink-0">Cable</div>
         </div>
 
-        <div id="exercise-list" class="scroll-container px-2 border-b border-black/5 mb-2"></div>
+        <div id="exercise-list" class="flex-1 overflow-y-auto px-2 mb-2 pb-10"></div>
         
-        <div class="pt-4 shrink-0">
-            <input type="text" id="arc-name-input" placeholder="Expedition Name" class="w-full text-center py-4 mb-4 text-xl font-bold uppercase tracking-widest focus:outline-none">
-            <div onclick="saveAndStartArc()" class="btn-primary italic mb-4">Commence the Trial</div>
+        <div class="pt-4 shrink-0 bg-[#F2EBDC] border-t border-black/5 pb-6">
+            <div id="reorder-list" class="max-h-32 overflow-y-auto mb-4 px-2 space-y-2"></div>
+            <input type="text" id="arc-name-input" placeholder="Expedition Name" class="w-full text-center py-4 mb-2 text-xl font-bold uppercase tracking-widest focus:outline-none bg-transparent">
+            <div onclick="saveAndStartArc()" class="btn-primary italic">Commence the Trial</div>
         </div>
     </div>
 
     <div id="workout-ui" class="fixed inset-0 bg-[#F2EBDC] z-[70] p-6 hidden flex flex-col">
         <header class="flex justify-between items-center pt-8 px-2 mb-6">
             <div onclick="retreatClick()" class="pill text-red-800 bg-red-100/50">Retreat</div>
-            <div class="flex flex-col items-center">
-                <span id="global-clock" class="text-xs font-black tracking-widest">00:00</span>
-                <span class="text-[7px] uppercase opacity-40 font-black">Time Elapsed</span>
-            </div>
+            <div class="flex flex-col items-center"><span id="global-clock" class="text-xs font-black tracking-widest">00:00</span><span class="text-[7px] uppercase opacity-40 font-black">Time Elapsed</span></div>
             <div onclick="openSwapModal()" class="pill">Swap Art</div>
         </header>
-
         <div class="flex-1 overflow-y-auto px-2 pb-6">
-            <div class="w-full h-56 grimoire-card mb-6 overflow-hidden relative flex items-center justify-center border-2 border-black/5 shadow-inner">
-                <img id="active-character" src="default.png" class="w-full h-full object-cover object-top mix-blend-multiply opacity-80 scale-110" onerror="this.style.opacity=0">
-                <div class="absolute bottom-4 px-4 py-1 bg-white/60 backdrop-blur-sm border border-black/10 rounded-full text-[9px] font-black uppercase tracking-widest" id="target-muscle">---</div>
-            </div>
-
-            <div class="flex justify-between items-start mb-1">
-                <h2 id="ex-name" class="text-2xl font-bold tracking-tighter italic font-serif">---</h2>
-                <span id="trial-counter" class="text-[9px] font-black opacity-40 uppercase tracking-[0.2em] mt-2">Trial 1</span>
-            </div>
-            <div class="flex justify-between items-center border-b border-black/5 pb-4 mb-6">
-                <p id="ex-sub" class="text-xs italic opacity-40">---</p>
-                <span id="history-label" class="text-[9px] font-black text-white bg-black px-3 py-1 rounded-full uppercase">NEW ART</span>
-            </div>
-
-            <div id="echo-box" class="flex justify-center mb-6">
-                <span id="echo-text" class="text-[9px] font-black opacity-40 uppercase tracking-[0.3em] bg-black/5 px-4 py-2 rounded-full border border-black/5">Echo of the Past: ---</span>
-            </div>
-
-            <div class="flex justify-end mb-4">
-                <div id="btn-warmup" onclick="toggleWarmup()" class="pill border border-black/10">Warm-Up: OFF</div>
-            </div>
-
+            <div class="w-full h-56 grimoire-card mb-6 overflow-hidden relative flex items-center justify-center border-2 border-black/5 shadow-inner"><img id="active-character" src="default.png" class="w-full h-full object-cover object-top mix-blend-multiply opacity-80 scale-110" onerror="this.style.opacity=0"><div class="absolute bottom-4 px-4 py-1 bg-white/60 backdrop-blur-sm border border-black/10 rounded-full text-[9px] font-black uppercase tracking-widest" id="target-muscle">---</div></div>
+            <div class="flex justify-between items-start mb-1"><h2 id="ex-name" class="text-2xl font-bold tracking-tighter italic font-serif">---</h2><span id="trial-counter" class="text-[9px] font-black opacity-40 uppercase tracking-[0.2em] mt-2">Trial 1</span></div>
+            <div class="flex justify-between items-center border-b border-black/5 pb-4 mb-6"><p id="ex-sub" class="text-xs italic opacity-40">---</p><span id="history-label" class="text-[9px] font-black text-white bg-black px-3 py-1 rounded-full uppercase">NEW ART</span></div>
+            <div id="echo-box" class="flex justify-center mb-6"><span id="echo-text" class="text-[9px] font-black opacity-40 uppercase tracking-[0.3em] bg-black/5 px-4 py-2 rounded-full border border-black/5">Echo of the Past: ---</span></div>
+            <div class="flex justify-end mb-4"><div id="btn-warmup" onclick="toggleWarmup()" class="pill border border-black/10">Warm-Up: OFF</div></div>
             <div class="grid grid-cols-2 gap-10 mb-8" id="reps-ui">
-                <div class="text-center">
-                    <label class="text-[9px] uppercase opacity-40 font-black block mb-2 tracking-widest">Load (KG)</label>
-                    <input type="number" inputmode="decimal" pattern="[0-9]*" id="weight-input" oninput="calculatePlates()" placeholder="0" class="text-5xl w-full focus:outline-none font-bold">
-                </div>
-                <div class="text-center">
-                    <label class="text-[9px] uppercase opacity-40 font-black block mb-2 tracking-widest">Repetitions</label>
-                    <input type="number" inputmode="decimal" pattern="[0-9]*" id="reps-input" placeholder="0" class="text-5xl w-full focus:outline-none font-bold">
-                </div>
+                <div class="text-center"><label class="text-[9px] uppercase opacity-40 font-black block mb-2 tracking-widest">Load (KG)</label><input type="number" inputmode="decimal" pattern="[0-9]*" id="weight-input" oninput="calculatePlates()" placeholder="0" class="text-5xl w-full focus:outline-none font-bold"></div>
+                <div class="text-center"><label class="text-[9px] uppercase opacity-40 font-black block mb-2 tracking-widest">Repetitions</label><input type="number" inputmode="decimal" pattern="[0-9]*" id="reps-input" placeholder="0" class="text-5xl w-full focus:outline-none font-bold"></div>
             </div>
-
             <div id="time-ui" class="hidden flex-col items-center mb-10 w-full">
                 <div class="text-5xl font-bold mb-6 font-serif" id="stopwatch-display">00:00</div>
-                <div class="flex gap-4 w-full px-4">
-                    <div onclick="toggleStopwatch()" id="btn-stopwatch" class="flex-1 pill py-4 font-bold text-xs text-center border border-black/10">Start Timer</div>
-                    <div onclick="resetStopwatch()" class="pill py-4 font-bold text-xs text-center px-6">Reset</div>
-                </div>
+                <div class="flex gap-4 w-full px-4"><div onclick="toggleStopwatch()" id="btn-stopwatch" class="flex-1 pill py-4 font-bold text-xs text-center border border-black/10">Start Timer</div><div onclick="resetStopwatch()" class="pill py-4 font-bold text-xs text-center px-6">Reset</div></div>
                 <input type="hidden" id="time-input" value="0">
             </div>
-
-            <div id="plate-math-ui" class="hidden flex-col items-center mb-8 w-full">
-                <div onclick="cycleBar()" id="bar-weight" class="pill mb-3">Bar: 20kg</div>
-                <div id="plate-display" class="flex gap-1 flex-wrap justify-center"></div>
-            </div>
-
+            <div id="plate-math-ui" class="hidden flex-col items-center mb-8 w-full"><div onclick="cycleBar()" id="bar-weight" class="pill mb-3">Bar: 20kg</div><div id="plate-display" class="flex gap-1 flex-wrap justify-center"></div></div>
             <button onclick="logSet()" class="w-full btn-endure mb-10">Endure</button>
-
             <div id="trial-history" class="space-y-3 pb-4"></div>
         </div>
-
         <footer class="pt-4 flex gap-4 w-full bg-[#F2EBDC] border-t border-black/5 pb-2 shrink-0">
             <div id="back-btn" onclick="prevArt()" class="w-20 py-6 rounded-2xl bg-black/5 text-center text-[10px] font-bold uppercase opacity-60 hidden cursor-pointer flex items-center justify-center">Back</div>
             <div id="progress-text" class="flex-1 py-6 text-center text-[10px] font-black opacity-30 uppercase tracking-[0.2em] flex items-center justify-center">1 / 4</div>
@@ -239,54 +189,18 @@
     </div>
 
     <div id="profile-window" class="fixed inset-0 bg-[#F2EBDC] z-[80] p-6 hidden flex flex-col">
-        <header class="mb-8 flex justify-between items-center pt-8 px-2">
-            <h2 class="text-3xl font-bold italic uppercase font-serif">The Status</h2>
-            <div onclick="closeProfile()" class="pill">Close</div>
-        </header>
+        <header class="mb-8 flex justify-between items-center pt-8 px-2"><h2 class="text-3xl font-bold italic uppercase font-serif">The Status</h2><div onclick="closeProfile()" class="pill">Close</div></header>
         <div class="scroll-container flex flex-col items-center">
-            <div class="w-full max-w-[280px] h-[360px] grimoire-card mb-8 overflow-hidden relative border-2 border-black/5">
-                <img id="profile-avatar" src="rank-e.png" class="w-full h-full object-cover object-top mix-blend-multiply scale-110" onerror="this.style.opacity=0">
-            </div>
+            <div class="w-full max-w-[280px] h-[360px] grimoire-card mb-8 overflow-hidden relative border-2 border-black/5"><img id="profile-avatar" src="rank-e.png" class="w-full h-full object-cover object-top mix-blend-multiply scale-110" onerror="this.style.opacity=0"></div>
             <h1 id="profile-name" class="text-4xl font-bold italic mb-1 uppercase tracking-tighter font-serif">---</h1>
-            <div class="flex items-center gap-2 mb-2">
-                <img id="profile-rank-icon" src="icon-rank-e.png" class="w-6 h-6 object-contain mix-blend-multiply opacity-80" onerror="this.style.display='none'">
-                <p id="profile-rank" class="text-lg font-bold italic opacity-60 font-serif">Rank E • Seeker</p>
-            </div>
+            <div class="flex items-center gap-2 mb-2"><img id="profile-rank-icon" src="icon-rank-e.png" class="w-6 h-6 object-contain mix-blend-multiply opacity-80" onerror="this.style.display='none'"><p id="profile-rank" class="text-lg font-bold italic opacity-60 font-serif">Rank E • Seeker</p></div>
             <p id="profile-sub" class="text-[9px] font-black uppercase opacity-30 text-center px-10 mb-10 leading-loose">---</p>
-            
-            <div class="w-full px-6 mb-10">
-                <div class="flex justify-between items-end mb-2">
-                    <span id="profile-level-txt" class="text-xs font-bold uppercase">Level 1</span>
-                    <span id="profile-xp-txt" class="text-[9px] font-black opacity-30 uppercase tracking-widest">0 / 120 XP</span>
-                </div>
-                <div class="xp-container"><div id="profile-xp-bar" class="xp-bar"></div></div>
-            </div>
-
-            <div class="flex gap-4 w-full px-6 mb-10">
-                <div class="grimoire-card p-6 flex-1 text-center">
-                    <p class="text-3xl font-bold italic font-serif" id="stat-quests">0</p>
-                    <p class="text-[8px] font-black uppercase opacity-40 mt-1">Expeditions</p>
-                </div>
-                <div class="grimoire-card p-6 flex-1 text-center">
-                    <p class="text-3xl font-bold italic font-serif" id="stat-volume">0</p>
-                    <p class="text-[8px] font-black uppercase opacity-40 mt-1">Tonnage</p>
-                </div>
-            </div>
+            <div class="w-full px-6 mb-10"><div class="flex justify-between items-end mb-2"><span id="profile-level-txt" class="text-xs font-bold uppercase">Level 1</span><span id="profile-xp-txt" class="text-[9px] font-black opacity-30 uppercase tracking-widest">0 / 120 XP</span></div><div class="xp-container"><div id="profile-xp-bar" class="xp-bar"></div></div></div>
+            <div class="flex gap-4 w-full px-6 mb-10"><div class="grimoire-card p-6 flex-1 text-center"><p class="text-3xl font-bold italic font-serif" id="stat-quests">0</p><p class="text-[8px] font-black uppercase opacity-40 mt-1">Expeditions</p></div><div class="grimoire-card p-6 flex-1 text-center"><p class="text-3xl font-bold italic font-serif" id="stat-volume">0</p><p class="text-[8px] font-black uppercase opacity-40 mt-1">Tonnage</p></div></div>
         </div>
     </div>
 
-    <div id="timer-bar">
-        <div class="flex gap-2 justify-center mb-8">
-            <div onclick="adjustTimer(30)" class="pill bg-white/10 text-white">30s</div>
-            <div onclick="adjustTimer(60)" class="pill bg-white/20 text-white shadow-lg">60s</div>
-            <div onclick="adjustTimer(120)" class="pill bg-white/10 text-white">120s</div>
-        </div>
-        <div class="text-center mb-8">
-            <span id="timer-display" class="text-8xl font-serif">60</span>
-            <p class="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 mt-4">Stamina Recovery</p>
-        </div>
-        <div onclick="skipTimer()" class="text-center py-4 text-[10px] font-black uppercase tracking-widest opacity-40 cursor-pointer">Awaken</div>
-    </div>
+    <div id="timer-bar"><div class="flex gap-2 justify-center mb-8"><div onclick="adjustTimer(30)" class="pill bg-white/10 text-white">30s</div><div onclick="adjustTimer(60)" class="pill bg-white/20 text-white shadow-lg">60s</div><div onclick="adjustTimer(120)" class="pill bg-white/10 text-white">120s</div></div><div class="text-center mb-8"><span id="timer-display" class="text-8xl font-serif">60</span><p class="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 mt-4">Stamina Recovery</p></div><div onclick="skipTimer()" class="text-center py-4 text-[10px] font-black uppercase tracking-widest opacity-40 cursor-pointer">Awaken</div></div>
 
     <script>
         const SYSTEM_CONFIG = { xpPerSet: 10, baseXp: 100, xpScaling: 20 };
@@ -301,6 +215,15 @@
             { en: "Plank", es: "Plancha", group: "Core", target: "Core", equip: "bodyweight", type: "time" }, { en: "Upper Abs Crunch", es: "Crunch Abdominal", group: "Core", target: "Upper Abs", equip: "bodyweight" }, { en: "Leg Raises", es: "Elevación de Piernas", group: "Core", target: "Lower Abs", equip: "bodyweight" }, { en: "Hanging Leg Raises", es: "Elevación Colgado", group: "Core", target: "Lower Abs", equip: "bodyweight" }, { en: "Russian Twists", es: "Giro Ruso", group: "Core", target: "Obliques", equip: "bodyweight" }, { en: "Bicycle Crunches", es: "Bicicleta", group: "Core", target: "Obliques", equip: "bodyweight" }, { en: "V-Ups", es: "Abdominales en V", group: "Core", target: "Abs", equip: "bodyweight" }, { en: "Mountain Climbers", es: "Escaladores", group: "Core", target: "Core", equip: "bodyweight", type: "time" }, { en: "Wall Sit", es: "Sentadilla Isométrica", group: "Legs", target: "Quads", equip: "bodyweight", type: "time" }, { en: "Cable Crunch", es: "Crunch en Polea", group: "Core", target: "Abs", equip: "cable" }, { en: "Woodchoppers", es: "Hachazos Polea", group: "Core", target: "Obliques", equip: "cable" }, { en: "Ab Machine", es: "Máquina de Abs", group: "Core", target: "Abs", equip: "machine" }
         ];
 
+        const QUESTS = [
+            { id: 'q1', name: 'Clear the Cellar', rank: 'Novice', desc: 'Beginner Full Body. Guild Note: Rest in the tavern tomorrow.', arts: ['Pushups', 'Goblet Squat', 'Dumbbell Row', 'Plank'] },
+            { id: 'q2', name: 'The Long March', rank: 'Novice', desc: 'Core & Endurance. Prepare for travel.', arts: ['Walking Lunges', 'Mountain Climbers', 'Wall Sit'] },
+            { id: 'q3', name: 'Forge the Iron Golem', rank: 'Adept', desc: 'Heavy Push Day. Build your armor.', arts: ['Barbell Bench Press', 'Overhead Press', 'Tricep Dips', 'Lateral Raises'] },
+            { id: 'q4', name: 'Scale the Obsidian Tower', rank: 'Adept', desc: 'Heavy Pull Day. Unyielding grip.', arts: ['Pull-ups', 'Barbell Row', 'Lat Pulldown', 'Barbell Curl'] },
+            { id: 'q5', name: 'Hold the Vanguard', rank: 'Adept', desc: 'Heavy Leg Day. Become unmovable.', arts: ['Barbell Squats', 'Leg Press', 'Romanian Deadlift (Bar)', 'Standing Calf Raises'] },
+            { id: 'q6', name: 'Subjugate the Behemoth', rank: 'Veteran', desc: 'The Big Three. High CNS tax.', arts: ['Deadlift', 'Barbell Squats', 'Barbell Bench Press', 'Barbell Row'] }
+        ];
+
         let level = 1, totalXp = 0, userName = "", selectedGroups = [], selectedArts = [], activeExpedition = [], currentIdx = 0, currentTrial = 1, sessionLog = [];
         let timerInterval, globalSeconds = 0, globalInterval, exStopwatchSeconds = 0, exStopwatchInterval = null, isStopwatchRunning = false;
         let barWeightIdx = 0; const BAR_WEIGHTS = [20, 15, 10, 0];
@@ -311,7 +234,7 @@
         window.onload = () => {
             legacyMigration(); loadState();
             if(!userName) { document.getElementById('onboarding').classList.remove('hidden'); } 
-            else { document.getElementById('display-name').textContent = userName; document.getElementById('home-screen').classList.remove('hidden'); updateLevelUI(); renderExpeditions(); }
+            else { document.getElementById('display-name').textContent = userName; document.getElementById('home-screen').classList.remove('hidden'); updateLevelUI(); renderExpeditions(); buildQuestBoard(); }
         };
 
         function legacyMigration() {
@@ -331,6 +254,29 @@
             localStorage.setItem('grimoire-level', level); localStorage.setItem('grimoire-total-xp', totalXp);
         }
 
+        function buildQuestBoard() {
+            const qContainer = document.getElementById('quest-board-container'); qContainer.innerHTML = '';
+            QUESTS.forEach(q => {
+                const badgeColor = q.rank === 'Novice' ? 'bg-[#4A5D4E]' : q.rank === 'Adept' ? 'bg-[#7B1818]' : 'bg-black text-white';
+                qContainer.innerHTML += `<div class="quest-card press-effect cursor-pointer" onclick="loadQuest('${q.id}')">
+                    <div class="flex justify-between items-start mb-2"><h4 class="font-bold italic font-serif text-lg leading-tight w-3/4">${q.name}</h4><span class="text-[8px] uppercase tracking-widest font-black py-1 px-2 rounded-full ${badgeColor}">${q.rank}</span></div>
+                    <p class="text-[9px] opacity-60 mb-2">${q.desc}</p>
+                    <p class="text-[8px] uppercase opacity-40 truncate">${q.arts.join(' • ')}</p>
+                </div>`;
+            });
+        }
+
+        function loadQuest(id) {
+            const quest = QUESTS.find(q => q.id === id);
+            if(quest) {
+                selectedArts = [];
+                quest.arts.forEach(artName => { const found = fullLibrary.find(a => a.en === artName); if(found) selectedArts.push(found); });
+                document.getElementById('arc-name-input').value = quest.name;
+                selectedGroups = ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core']; // Expand view
+                renderBuilderList();
+            }
+        }
+
         function toggleArsenal(group) {
             const btn = document.getElementById(`btn-${group}`);
             if(selectedGroups.includes(group)) { selectedGroups = selectedGroups.filter(g => g !== group); btn.style.borderColor = 'transparent'; btn.style.opacity = '0.6'; } 
@@ -347,22 +293,54 @@
             renderBuilderList();
         }
 
-        function openBuilder() { document.getElementById('selection-ui').classList.remove('hidden'); setFilter('All'); }
+        function openBuilder() { document.getElementById('selection-ui').classList.remove('hidden'); setFilter('All'); renderBuilderList(); }
         function closeBuilder() { document.getElementById('selection-ui').classList.add('hidden'); }
 
         function renderBuilderList() {
             const list = document.getElementById('exercise-list'); list.innerHTML = '';
             let baseList = fullLibrary.filter(a => selectedGroups.includes(a.group));
             const filtered = currentFilter === 'All' ? baseList : baseList.filter(a => a.equip === currentFilter);
+            
             filtered.forEach(art => {
-                const card = document.createElement('div'); card.className = "grimoire-card p-6 mb-4 flex justify-between items-center press-effect cursor-pointer";
-                if(selectedArts.some(s => s.en === art.en)) card.style.borderColor = 'var(--iron)';
+                const card = document.createElement('div'); card.className = "grimoire-card p-6 mb-4 flex justify-between items-center press-effect cursor-pointer relative";
+                const selIdx = selectedArts.findIndex(s => s.en === art.en);
+                
+                if(selIdx > -1) { 
+                    card.style.borderColor = 'var(--iron)'; 
+                    card.innerHTML += `<div class="order-badge">${selIdx + 1}</div>`; 
+                }
+                
                 card.onclick = () => {
                     const idx = selectedArts.findIndex(s => s.en === art.en);
-                    if(idx > -1) { selectedArts.splice(idx, 1); card.style.borderColor = 'transparent'; } else { selectedArts.push(art); card.style.borderColor = 'var(--iron)'; }
+                    if(idx > -1) { selectedArts.splice(idx, 1); } else { selectedArts.push(art); }
+                    renderBuilderList();
                 };
-                card.innerHTML = `<div><p class="font-bold">${art.en}</p><p class="text-[8px] uppercase opacity-40">${art.equip}</p></div>`; list.appendChild(card);
+                card.innerHTML += `<div><p class="font-bold">${art.en}</p><p class="text-[8px] uppercase opacity-40">${art.equip}</p></div>`; 
+                list.appendChild(card);
             });
+            renderReorderList();
+        }
+
+        function renderReorderList() {
+            const rList = document.getElementById('reorder-list'); rList.innerHTML = '';
+            if(selectedArts.length === 0) return;
+            selectedArts.forEach((art, i) => {
+                rList.innerHTML += `<div class="flex justify-between items-center bg-white/40 border border-black/5 p-3 rounded-xl text-xs font-bold">
+                    <span class="truncate pr-2">${i+1}. ${art.en}</span>
+                    <div class="flex gap-2 shrink-0">
+                        <div onclick="moveArt(${i}, -1)" class="w-6 h-6 flex items-center justify-center bg-[#333333] text-[#F2EBDC] rounded cursor-pointer ${i===0?'opacity-30':''}"><span class="text-[8px]">▲</span></div>
+                        <div onclick="moveArt(${i}, 1)" class="w-6 h-6 flex items-center justify-center bg-[#333333] text-[#F2EBDC] rounded cursor-pointer ${i===selectedArts.length-1?'opacity-30':''}"><span class="text-[8px]">▼</span></div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function moveArt(idx, dir) {
+            if(idx + dir < 0 || idx + dir >= selectedArts.length) return;
+            const temp = selectedArts[idx];
+            selectedArts[idx] = selectedArts[idx + dir];
+            selectedArts[idx + dir] = temp;
+            renderBuilderList();
         }
 
         function saveAndStartArc() {
@@ -428,7 +406,6 @@
             
             awardXp(SYSTEM_CONFIG.xpPerSet); currentTrial++; document.getElementById('trial-counter').textContent = `Trial ${currentTrial}`; startTimer(60);
             
-            // Update Echo display for next set
             const echo = JSON.parse(localStorage.getItem(`grimoire-echo-${art.en}`) || "[]"); const nextEcho = echo[currentTrial - 1];
             if(art.type === 'time') document.getElementById('echo-text').textContent = nextEcho && nextEcho.t ? `ECHO: ${nextEcho.t}S` : "ECHO: NONE";
             else { document.getElementById('echo-text').textContent = nextEcho ? `ECHO: ${nextEcho.w}KG x ${nextEcho.r}` : "ECHO: NONE"; if(nextEcho) { document.getElementById('weight-input').value = nextEcho.w; document.getElementById('reps-input').value = nextEcho.r; calculatePlates();} }
@@ -463,7 +440,7 @@
         function openSwapModal() {
             const currEx = activeExpedition[currentIdx]; const alts = fullLibrary.filter(a => a.group === currEx.group && a.en !== currEx.en);
             const list = document.getElementById('swap-list');
-            list.innerHTML = alts.length ? alts.map(a => `<div onclick="executeSwap('${a.en}')" class="grimoire-card p-4 press-effect cursor-pointer flex justify-between items-center mb-2"><div><p class="font-bold">${a.en}</p><p class="text-[8px] opacity-40 uppercase">${a.equip}</p></div></div>`).join('') : '<p class="text-center text-[10px] opacity-40 py-4">No alternative arts.</p>';
+            list.innerHTML = alts.length ? alts.map(a => `<div onclick="executeSwap('${a.en}')" class="grimoire-card p-4 press-effect cursor-pointer flex justify-between items-center mb-2"><div><p class="font-bold">${a.en}</p><p class="text-[8px] opacity-40 uppercase">${a.equip} • ${a.target}</p></div></div>`).join('') : '<p class="text-center text-[10px] opacity-40 py-4">No alternative arts.</p>';
             document.getElementById('ui-shield').classList.add('active'); document.getElementById('swap-modal').classList.add('show');
         }
         function closeSwapModal() { document.getElementById('ui-shield').classList.remove('active'); document.getElementById('swap-modal').classList.remove('show'); }
