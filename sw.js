@@ -1,25 +1,20 @@
-const CACHE_NAME = 'zen-gym-v3';
+const CACHE_NAME = 'grimoire-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json'
+];
 
-self.addEventListener('install', (e) => {
-    self.skipWaiting();
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll([
-                './',
-                './index.html',
-                './manifest.json',
-                './icon-192.png',
-                './icon-512.png'
-            ]);
-        })
-    );
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
 });
 
-// THE NETWORK-FIRST PROTOCOL
-self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        fetch(e.request).catch(() => {
-            return caches.match(e.request);
-        })
-    );
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
 });
