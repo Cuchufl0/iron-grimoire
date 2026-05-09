@@ -100,7 +100,7 @@
     <div id="purge-modal"><h2 class="text-2xl font-extrabold tracking-tighter mb-2 uppercase text-center text-gray-800">Purge Arc?</h2><p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-10 text-center leading-relaxed">The System will permanently delete these coordinates.</p><div onclick="cancelPurge()" class="zen-button mb-4 press-effect">Cancel</div><div onclick="executePurge()" class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 py-4 cursor-pointer text-center">Purge</div></div>
     <div id="swap-modal"><div class="flex justify-between items-center mb-6 shrink-0"><h2 class="text-xl font-extrabold tracking-tighter text-gray-800 uppercase">Swap Art</h2><div onclick="closeSwapModal()" class="pill cursor-pointer">Close</div></div><div id="swap-list" class="overflow-y-auto flex-1 pr-2 space-y-3"></div></div>
 
-    <div id="analytics-window" class="fixed inset-0 bg-[#fcfcfc] z-[60] p-6 hidden flex flex-col">
+    <div id="analytics-window" class="fixed inset-0 bg-[#fcfcfc] z-[60] pt-6 px-6 pb-[calc(24px+env(safe-area-inset-bottom))] hidden flex flex-col">
         <header class="mb-8 flex justify-between items-center pt-8 px-2 shrink-0"><h2 class="text-3xl font-extrabold text-gray-800 tracking-tighter uppercase">Analytics</h2><div onclick="closeAnalytics()" class="pill cursor-pointer press-effect">Close</div></header>
         <div class="scroll-container pb-10">
             <div class="flex gap-4 mb-8 px-2"><div class="bento-card p-6 flex-1 text-center"><p class="text-4xl font-black text-gray-800 tracking-tighter" id="stat-workouts">0</p><p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mt-2">Workouts</p></div><div class="bento-card p-6 flex-1 text-center"><p class="text-4xl font-black text-gray-800 tracking-tighter" id="stat-sets">0</p><p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mt-2">Total Sets</p></div></div>
@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <div id="profile-window" class="fixed inset-0 bg-[#fcfcfc] z-[70] p-6 hidden flex flex-col">
+    <div id="profile-window" class="fixed inset-0 bg-[#fcfcfc] z-[70] pt-6 px-6 pb-[calc(24px+env(safe-area-inset-bottom))] hidden flex flex-col">
         <header class="mb-8 flex justify-between items-center pt-8 px-2 shrink-0">
             <h2 class="text-3xl font-extrabold text-gray-800 tracking-tighter uppercase">Status</h2>
             <div onclick="closeProfile()" class="pill bg-gray-100 text-gray-500 cursor-pointer press-effect">Close</div>
@@ -201,7 +201,7 @@
         </div>
     </div>
 
-    <div id="selection-ui" class="fixed inset-0 bg-white z-40 p-6 hidden flex flex-col">
+    <div id="selection-ui" class="fixed inset-0 bg-white z-40 pt-6 px-6 pb-[calc(24px+env(safe-area-inset-bottom))] hidden flex flex-col">
         <header class="mb-4 flex justify-between items-center pt-6 px-2 shrink-0">
             <h2 id="selection-title" class="text-3xl font-extrabold text-gray-800 tracking-tighter uppercase">Arc Builder</h2>
             <div onclick="closeSelectionUI()" class="pill cursor-pointer">Close</div>
@@ -226,7 +226,7 @@
         </div>
     </div>
 
-    <div id="workout-ui" class="fixed inset-0 bg-white z-50 p-6 hidden flex flex-col">
+    <div id="workout-ui" class="fixed inset-0 bg-white z-50 pt-6 px-6 pb-0 hidden flex flex-col">
         <div class="flex justify-between items-center mb-6 pt-8 px-2 shrink-0">
             <div onclick="retreatClick()" class="pill bg-red-50 text-red-500 cursor-pointer press-effect">Retreat</div>
             <div class="flex flex-col items-center">
@@ -284,7 +284,8 @@
             <div onclick="logSet()" class="zen-button mb-10 press-effect shadow-lg" role="button">Unleash</div>
             <div id="set-history" class="mb-4 w-full"><h4 class="text-[9px] font-black uppercase text-gray-400 tracking-[0.3em] mb-4 text-center">Record of Forms</h4><div id="history-list" class="w-full"></div></div>
         </div>
-        <div class="mt-auto pt-4 flex gap-4 w-full shrink-0 border-t border-gray-100 bg-white pb-2">
+        
+        <div class="mt-auto pt-4 flex gap-4 w-full shrink-0 border-t border-gray-100 bg-white pb-[calc(24px+env(safe-area-inset-bottom))]">
             <div id="back-btn" onclick="prevExercise()" style="visibility: hidden;" class="flex-1 py-5 rounded-[24px] bg-gray-50 font-bold text-gray-500 text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer">Back</div>
             <div id="progress-text" class="flex-1 py-5 font-black text-gray-300 text-[10px] uppercase tracking-[0.2em] text-center flex items-center justify-center">1/4</div>
             <div id="next-btn" onclick="nextExercise()" class="flex-1 py-5 rounded-[24px] bg-[#1a1a1a] text-white font-bold text-[10px] uppercase tracking-widest text-center press-effect flex items-center justify-center cursor-pointer shadow-md">Advance</div>
